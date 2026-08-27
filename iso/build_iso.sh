@@ -19,8 +19,8 @@ if ! command -v mkarchiso &> /dev/null; then
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-WORK_DIR="/tmp/chef-carthy-archiso-work"
-PROFILE_DIR="/tmp/chef-iso-profile-merged"
+WORK_DIR="/var/tmp/chef-carthy-archiso-work"
+PROFILE_DIR="/var/tmp/chef-iso-profile-merged"
 OUT_DIR="$SCRIPT_DIR/out"
 
 mkdir -p "$OUT_DIR" "$PROFILE_DIR"

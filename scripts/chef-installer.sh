@@ -84,7 +84,7 @@ mount "$PART_EFI" /mnt/boot
 
 # 5. Pacstrap Base System
 echo -e "\n${CYAN}5. Installing Base Arch Linux System & Hyprland...${NC}"
-pacstrap /mnt base base-devel linux linux-firmware sudo networkmanager pipewire pipewire-pulse wireplumber hyprland alacritty foot python git starship btop eza bat fd ripgrep wl-clipboard wtype
+pacstrap /mnt base base-devel linux linux-firmware sudo networkmanager pipewire pipewire-pulse wireplumber hyprland alacritty foot python python-pip git starship btop eza bat fd ripgrep wl-clipboard wtype curl wget which nano
 
 # 6. Generate FSTAB
 echo -e "\n${CYAN}6. Generating /etc/fstab...${NC}"
@@ -129,10 +129,17 @@ console-mode max
 LOADER_CONF
 CHROOT_EOF
 
-# 8. Copy Chef_Carthy Suite into target system
+# 8. Install Chef_Carthy Suite into target system
 echo -e "\n${CYAN}8. Installing Chef_Carthy OS Suite & Agentic AI Core...${NC}"
+mkdir -p /mnt/home/$USERNAME/Projects
+arch-chroot /mnt /bin/bash -c "
+  cd /home/$USERNAME/Projects && \
+  git clone https://github.com/OLAg-shs/Chef_Carthy.git && \
+  chown -R $USERNAME:$USERNAME /home/$USERNAME/Projects && \
+  sudo -u $USERNAME HOME=/home/$USERNAME /home/$USERNAME/Projects/Chef_Carthy/install.sh
+"
 mkdir -p /mnt/usr/local/bin
-cp -r /usr/local/bin/chef* /mnt/usr/local/bin/ 2>/dev/null || true
+cp -r /mnt/home/$USERNAME/Projects/Chef_Carthy/bin/* /mnt/usr/local/bin/ 2>/dev/null || true
 chmod +x /mnt/usr/local/bin/chef* 2>/dev/null || true
 
 echo -e "\n${PURPLE}═══════════════════════════════════════════════════════════════════════════════${NC}"
