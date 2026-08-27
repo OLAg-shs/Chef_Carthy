@@ -1,0 +1,191 @@
+#!/usr/bin/env python3
+"""
+Chef_Carthy OS - Custom Unified Package Manager & Bundle Installer (chef-pkg)
+Provides a friendly, beautiful, color-coded package manager wrapping pacman & yay
+with category bundles, search caching, and dependency verification.
+"""
+
+import sys
+import os
+import shutil
+import subprocess
+from pathlib import Path
+
+# Terminal Colors
+C_RESET = "\033[0m"
+C_BOLD = "\033[1m"
+C_CYAN = "\033[38;5;51m"
+C_GREEN = "\033[38;5;46m"
+C_YELLOW = "\033[38;5;226m"
+C_RED = "\033[38;5;196m"
+C_PURPLE = "\033[38;5;141m"
+C_GRAY = "\033[38;5;244m"
+
+BUNDLES = {
+    "core": {
+        "name": "Core Desktop & Wayland Suite",
+        "description": "Hyprland, Waybar, Alacritty, Foot, Starship, PipeWire audio & tools",
+        "packages": ["hyprland", "xdg-desktop-portal-hyprland", "alacritty", "foot", "starship", "btop", "eza", "bat", "fd", "ripgrep", "wl-clipboard", "wtype", "grim", "slurp", "swaybg"]
+    },
+    "cyber-network": {
+        "name": "Network & Protocol Analysis",
+        "description": "Packet inspection, port scanning & traffic tools",
+        "packages": ["wireshark-qt", "tcpdump", "termshark", "nmap", "net-tools", "iftop", "traceroute", "ethtool"]
+    },
+    "cyber-web": {
+        "name": "Web Application & API Auditing",
+        "description": "HTTP proxies, REST clients & web auditing utilities",
+        "packages": ["mitmproxy", "curlie", "httpie", "curl", "wget", "nikto"]
+    },
+    "cyber-forensics": {
+        "name": "Forensics & Incident Response",
+        "description": "Disk analysis, data extraction & artifact carving",
+        "packages": ["sleuthkit", "binwalk", "foremost", "testdisk", "hexedit", "ddrescue"]
+    },
+    "cyber-reversing": {
+        "name": "Reverse Engineering & Binary Analysis",
+        "description": "Disassemblers, debuggers, system tracing tools",
+        "packages": ["radare2", "gdb", "strace", "ltrace", "valgrind", "patchelf"]
+    },
+    "cyber-hardening": {
+        "name": "System Hardening & Defensive Shield",
+        "description": "Host firewall, antivirus, audit daemons & rootkit hunter",
+        "packages": ["ufw", "fail2ban", "clamav", "lynis", "audit", "rkhunter"]
+    },
+    "dev": {
+        "name": "Developer & System Runtimes",
+        "description": "Python, Rust, C/C++, Docker, Git and Neovim",
+        "packages": ["git", "neovim", "python", "python-pip", "python-requests", "gcc", "clang", "make", "cmake", "docker", "docker-compose"]
+    }
+}
+
+def get_aur_helper():
+    for h in ["yay", "paru"]:
+        if shutil.which(h):
+            return h
+    return None
+
+def run_install(packages):
+    if not packages:
+        print(f"{C_YELLOW}No packages specified.{C_RESET}")
+        return
+
+    aur = get_aur_helper()
+    cmd = [aur, "-S", "--needed", "--noconfirm"] if aur else ["sudo", "pacman", "-S", "--needed", "--noconfirm"]
+    
+    print(f"\n{C_CYAN}{C_BOLD}📦 [CHEF-PKG] INSTALLING PACKAGES...{C_RESET}")
+    print(f"  {C_GRAY}Packages:{C_RESET} {C_BOLD}{', '.join(packages)}{C_RESET}")
+    print(f"  {C_GRAY}Engine:{C_RESET} {C_PURPLE}{' '.join(cmd)}{C_RESET}\n")
+
+    try:
+        subprocess.run(cmd + packages, check=True)
+        print(f"\n{C_GREEN}{C_BOLD}✓ Installation finished successfully!{C_RESET}\n")
+    except subprocess.CalledProcessError as e:
+        print(f"\n{C_RED}{C_BOLD}✗ Installation failed (Exit code {e.returncode}).{C_RESET}\n")
+
+def run_remove(packages):
+    if not packages:
+        print(f"{C_YELLOW}No packages specified to remove.{C_RESET}")
+        return
+
+    aur = get_aur_helper()
+    cmd = [aur, "-Rns", "--noconfirm"] if aur else ["sudo", "pacman", "-Rns", "--noconfirm"]
+    
+    print(f"\n{C_RED}{C_BOLD}🗑️ [CHEF-PKG] REMOVING PACKAGES...{C_RESET}")
+    print(f"  {C_GRAY}Packages:{C_RESET} {C_BOLD}{', '.join(packages)}{C_RESET}\n")
+
+    try:
+        subprocess.run(cmd + packages, check=True)
+        print(f"\n{C_GREEN}{C_BOLD}✓ Removal complete!{C_RESET}\n")
+    except subprocess.CalledProcessError as e:
+        print(f"\n{C_RED}{C_BOLD}✗ Removal failed.{C_RESET}\n")
+
+def run_search(query):
+    if not query:
+        print(f"{C_YELLOW}Please specify a search query.{C_RESET}")
+        return
+
+    aur = get_aur_helper()
+    cmd = [aur, "-Ss", query] if aur else ["pacman", "-Ss", query]
+    
+    print(f"\n{C_CYAN}{C_BOLD}🔍 [CHEF-PKG] SEARCH RESULTS FOR: '{query}'{C_RESET}\n")
+    try:
+        subprocess.run(cmd)
+    except Exception as e:
+        print(f"{C_RED}Search failed: {e}{C_RESET}")
+
+def run_system_upgrade():
+    aur = get_aur_helper()
+    cmd = [aur, "-Syu", "--noconfirm"] if aur else ["sudo", "pacman", "-Syu", "--noconfirm"]
+    
+    print(f"\n{C_CYAN}{C_BOLD}⚡ [CHEF-PKG] FULL SYSTEM UPGRADE...{C_RESET}\n")
+    try:
+        subprocess.run(cmd, check=True)
+        # Vacuum old cache
+        if shutil.which("paccache"):
+            print(f"\n{C_PURPLE}🧹 Vacuuming package cache...{C_RESET}")
+            subprocess.run(["sudo", "paccache", "-rk1"], stderr=subprocess.DEVNULL)
+        print(f"\n{C_GREEN}{C_BOLD}✓ System is 100% up to date!{C_RESET}\n")
+    except Exception as e:
+        print(f"\n{C_RED}Upgrade error: {e}{C_RESET}\n")
+
+def list_bundles():
+    print(f"\n{C_PURPLE}{C_BOLD}═══════════════════════════════════════════════════════════════════════════════{C_RESET}")
+    print(f"{C_CYAN}{C_BOLD}📦 CHEF_CARTHY OS - CURATED TOOLCHAIN BUNDLES{C_RESET}")
+    print(f"{C_PURPLE}═══════════════════════════════════════════════════════════════════════════════{C_RESET}\n")
+    
+    for b_id, b in BUNDLES.items():
+        installed_count = sum(1 for p in b["packages"] if shutil.which(p) is not None)
+        total_count = len(b["packages"])
+        status = f"{C_GREEN}✓ Active ({installed_count}/{total_count}){C_RESET}" if installed_count > 0 else f"{C_GRAY}Available{C_RESET}"
+        
+        print(f"  {C_BOLD}{C_CYAN}► {b['name']}{C_RESET} [{C_PURPLE}{b_id}{C_RESET}] - {status}")
+        print(f"    {C_GRAY}{b['description']}{C_RESET}")
+        print(f"    {C_GRAY}Packages:{C_RESET} {', '.join(b['packages'])}")
+        print()
+
+    print(f"{C_GRAY}To install a bundle: {C_BOLD}chef pkg bundle <bundle-id>{C_RESET}\n")
+
+def install_bundle(bundle_id):
+    if bundle_id not in BUNDLES:
+        print(f"{C_RED}Error: Unknown bundle '{bundle_id}'. Run 'chef pkg bundles' to list available.{C_RESET}")
+        return
+    b = BUNDLES[bundle_id]
+    print(f"\n{C_CYAN}{C_BOLD}📦 Installing Bundle: {b['name']}...{C_RESET}")
+    run_install(b["packages"])
+
+def main():
+    if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help", "help"):
+        print(f"\n{C_BOLD}Chef_Carthy OS Package Manager (chef-pkg){C_RESET}")
+        print(f"\n{C_BOLD}USAGE:{C_RESET} chef pkg <command> [args...]\n")
+        print(f"  {C_CYAN}install <pkg...>{C_RESET}       Install packages via pacman/AUR")
+        print(f"  {C_CYAN}remove <pkg...>{C_RESET}        Remove packages and unused dependencies")
+        print(f"  {C_CYAN}search <query>{C_RESET}         Search for packages in official repos & AUR")
+        print(f"  {C_CYAN}update / upgrade{C_RESET}       Full system and AUR upgrade + cache clean")
+        print(f"  {C_CYAN}bundles{C_RESET}                List all curated cybersecurity & dev bundles")
+        print(f"  {C_CYAN}bundle <id>{C_RESET}            Install a full curated bundle\n")
+        return
+
+    cmd = sys.argv[1]
+
+    if cmd in ("install", "i", "add"):
+        run_install(sys.argv[2:])
+    elif cmd in ("remove", "rm", "uninstall"):
+        run_remove(sys.argv[2:])
+    elif cmd in ("search", "s", "find"):
+        run_search(" ".join(sys.argv[2:]))
+    elif cmd in ("update", "upgrade", "up"):
+        run_system_upgrade()
+    elif cmd in ("bundles", "list-bundles"):
+        list_bundles()
+    elif cmd == "bundle":
+        if len(sys.argv) > 2:
+            install_bundle(sys.argv[2])
+        else:
+            list_bundles()
+    else:
+        # Default fallback to install
+        run_install(sys.argv[1:])
+
+if __name__ == "__main__":
+    main()

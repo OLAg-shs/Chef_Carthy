@@ -1,0 +1,33 @@
+# Chef_Carthy OS - Starship Prompt Configuration
+# High performance, minimal latency, cyber aesthetics
+
+format = """
+[┌─](bold #7000ff)$directory$git_branch$git_status$package$python
+[└─>](bold #00f0ff) """
+
+add_newline = false
+
+[directory]
+style = "bold #00f0ff"
+truncation_length = 3
+truncate_to_repo = true
+read_only = " 🔒"
+
+[git_branch]
+style = "bold #7000ff"
+symbol = "🌱 "
+
+[git_status]
+style = "bold #ec4899"
+
+[package]
+style = "bold #ffb000"
+symbol = "📦 "
+
+[python]
+style = "bold #10b981"
+symbol = "🐍 "
+
+[cmd_duration]
+min_time = 2_000
+style = "bold #f59e0b"

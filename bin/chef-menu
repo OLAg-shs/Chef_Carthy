@@ -1,0 +1,69 @@
+#!/usr/bin/env python3
+"""
+Chef_Carthy OS - Interactive Control Center & TUI Menu (chef-menu)
+Provides an effortless keyboard-driven menu to navigate audits, toolchains,
+themes, AI terminal assistance, and system updates.
+"""
+
+import sys
+import os
+import subprocess
+import shutil
+
+C_RESET = "\033[0m"
+C_BOLD = "\033[1m"
+C_CYAN = "\033[38;5;51m"
+C_GREEN = "\033[38;5;46m"
+C_PURPLE = "\033[38;5;141m"
+C_YELLOW = "\033[38;5;226m"
+C_GRAY = "\033[38;5;244m"
+
+MENU_ITEMS = [
+    ("1", "🔍 Run Full Security Posture Audit", "chef audit"),
+    ("2", "🤖 Launch AI Security Assistant", "chef ai"),
+    ("3", "📦 Install Security Toolchains (Network, Web, Reversing)", "chef pkg bundles"),
+    ("4", "🎨 Switch Tactical Desktop Theme", "chef theme list"),
+    ("5", "🌐 Network & Socket Inspector", "chef network"),
+    ("6", "⚡ Full System Upgrade & Cache Vacuum", "chef pkg upgrade"),
+    ("7", "💿 Build Standalone Bootable ISO", "/home/chef_carthy/Projects/Chef_Carthy/iso/build_iso.sh"),
+    ("q", "❌ Exit", None)
+]
+
+def run_tui_menu():
+    while True:
+        os.system("clear")
+        print(f"{C_PURPLE}{C_BOLD}")
+        print("   ██████╗██╗  ██╗███████╗███████╗   ██████╗ █████╗ ██████╗ ████████╗██╗  ██╗██╗   ██╗")
+        print("  ██╔════╝██║  ██║██╔════╝██╔════╝  ██╔════╝██╔══██╗██╔══██╗╚══██╔══╝██║  ██║╚██╗ ██╔╝")
+        print("  ██║     ███████║█████╗  █████╗    ██║     ███████║██████╔╝   ██║   ███████║ ╚████╔╝ ")
+        print("  ██║     ██╔══██║██╔══╝  ██╔══╝    ██║     ██╔══██║██╔══██╗   ██║   ██╔══██║  ╚██╔╝  ")
+        print("  ╚██████╗██║  ██║███████╗██║       ╚██████╗██║  ██║██║  ██║   ██║   ██║  ██║   ██║   ")
+        print("   ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝        ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝   ╚═╝   ")
+        print(f"{C_CYAN}  ► Interactive Control Center & System Hub{C_RESET}\n")
+
+        for key, label, _ in MENU_ITEMS:
+            print(f"  {C_BOLD}{C_CYAN}[{key}]{C_RESET} {label}")
+        print()
+
+        try:
+            choice = input(f"{C_BOLD}Select an option (1-7, q): {C_RESET}").strip().lower()
+        except (KeyboardInterrupt, EOFError):
+            print("\nExiting.")
+            break
+
+        if choice in ("q", "exit", "quit"):
+            break
+
+        matched = next((item for item in MENU_ITEMS if item[0] == choice), None)
+        if matched and matched[2]:
+            os.system("clear")
+            subprocess.run(["bash", "-c", matched[2]])
+            input(f"\n{C_GRAY}Press Enter to return to menu...{C_RESET}")
+        else:
+            print(f"{C_YELLOW}Invalid selection. Please choose 1-7 or q.{C_RESET}")
+
+def main():
+    run_tui_menu()
+
+if __name__ == "__main__":
+    main()

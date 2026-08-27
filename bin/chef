@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Chef_Carthy OS - AI-Powered Cybersecurity & Security Auditing CLI Engine
-Provides autonomous security auditing, log analysis, network posture scanning,
-system hardening, and an interactive AI Security Assistant.
+Chef_Carthy OS - Universal Master Command Center (chef)
+The core CLI orchestrating packages, tactical themes, security audits,
+AI assistance, network diagnostics, and ISO creation.
 """
 
 import sys
@@ -15,6 +15,8 @@ import subprocess
 from pathlib import Path
 
 VERSION = "1.0.0"
+SCRIPT_DIR = Path(__file__).resolve().parent
+PROJECT_DIR = SCRIPT_DIR.parent
 CONFIG_DIR = Path.home() / ".config" / "chef_carthy"
 STATE_DIR = Path.home() / ".local" / "state" / "chef_carthy"
 
@@ -27,7 +29,6 @@ C_CYAN = "\033[38;5;51m"
 C_YELLOW = "\033[38;5;226m"
 C_PURPLE = "\033[38;5;141m"
 C_GRAY = "\033[38;5;244m"
-C_BG_DARK = "\033[48;5;234m"
 
 BANNER = f"""{C_PURPLE}{C_BOLD}
    ██████╗██╗  ██╗███████╗███████╗   ██████╗ █████╗ ██████╗ ████████╗██╗  ██╗██╗   ██╗
@@ -36,38 +37,14 @@ BANNER = f"""{C_PURPLE}{C_BOLD}
   ██║     ██╔══██║██╔══╝  ██╔══╝    ██║     ██╔══██║██╔══██╗   ██║   ██╔══██║  ╚██╔╝  
   ╚██████╗██║  ██║███████╗██║       ╚██████╗██║  ██║██║  ██║   ██║   ██║  ██║   ██║   
    ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝        ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝   ╚═╝   
-{C_CYAN}  ► AI-Powered Cybersecurity OS & Tactical Security Assistant · v{VERSION}{C_RESET}
+{C_CYAN}  ► AI-Powered Cybersecurity OS & Tactical Workstation Suite · v{VERSION}{C_RESET}
 """
-
-TOOL_CATEGORIES = {
-    "network": {
-        "name": "Network Inspection & Protocol Analysis",
-        "packages": ["wireshark-qt", "tcpdump", "termshark", "nmap", "net-tools", "ethtool", "iftop", "traceroute"]
-    },
-    "web": {
-        "name": "Web & API Security Auditing",
-        "packages": ["mitmproxy", "curl", "curlie", "httpie", "wget", "nikto"]
-    },
-    "forensics": {
-        "name": "Digital Forensics & Incident Response",
-        "packages": ["sleuthkit", "binwalk", "foremost", "testdisk", "ddrescue", "hexedit"]
-    },
-    "reversing": {
-        "name": "Binary Analysis & Reverse Engineering",
-        "packages": ["radare2", "gdb", "strace", "ltrace", "valgrind", "patchelf"]
-    },
-    "hardening": {
-        "name": "Defensive Hardening & Compliance",
-        "packages": ["lynis", "clamav", "ufw", "fail2ban", "audit", "rkhunter", "apparmor"]
-    }
-}
 
 def print_banner():
     print(BANNER)
 
 def run_system_audit():
     print(f"\n{C_CYAN}{C_BOLD}🔍 [CHEF_CARTHY] RUNNING COMPREHENSIVE SECURITY AUDIT...{C_RESET}\n")
-    results = {}
     
     # 1. Firewall Posture
     print(f"  {C_BOLD}1. Checking Firewall (UFW / iptables)...{C_RESET}")
@@ -82,11 +59,9 @@ def run_system_audit():
         print(f"     {C_GREEN}✓ Firewall is ACTIVE and filtering traffic.{C_RESET}")
     else:
         print(f"     {C_YELLOW}⚠ Warning: Host firewall is {ufw_status}. Enable with 'sudo ufw enable'.{C_RESET}")
-    results["firewall"] = ufw_status
 
     # 2. Open Listening Ports & Sockets
     print(f"\n  {C_BOLD}2. Scanning Open Listening Network Ports...{C_RESET}")
-    open_ports = []
     try:
         out = subprocess.check_output(["ss", "-tuln"], text=True)
         lines = out.strip().split("\n")[1:]
@@ -95,11 +70,9 @@ def run_system_audit():
             if len(parts) >= 5:
                 proto = parts[0]
                 addr = parts[4]
-                open_ports.append(f"{proto} -> {addr}")
                 print(f"     {C_GRAY}• Listening:{C_RESET} {C_CYAN}{proto.upper():<4}{C_RESET} on {C_BOLD}{addr}{C_RESET}")
     except Exception as e:
         print(f"     {C_RED}Failed to list open ports: {e}{C_RESET}")
-    results["open_ports"] = open_ports
 
     # 3. Kernel Hardening & Security Parameters
     print(f"\n  {C_BOLD}3. Inspecting Kernel Security Parameters (sysctl)...{C_RESET}")
@@ -130,7 +103,7 @@ def run_system_audit():
     print(f"{C_BOLD}🎯 Security Baseline Score:{C_RESET} {C_GREEN}88/100 (Hardened Base){C_RESET}")
     print(f"{C_CYAN}💡 Recommendations:{C_RESET}")
     print(f"   • Enforce firewall rules: {C_BOLD}sudo ufw default deny incoming && sudo ufw enable{C_RESET}")
-    print(f"   • Run full deep Lynis audit: {C_BOLD}chef audit --deep{C_RESET}")
+    print(f"   • Install complete cyber bundles: {C_BOLD}chef pkg bundles{C_RESET}")
     print(f"{C_PURPLE}═══════════════════════════════════════════════════════════════════════════════{C_RESET}\n")
 
 def run_network_scan():
@@ -164,15 +137,12 @@ def query_ai_assistant(prompt: str):
     print(f"\n{C_PURPLE}{C_BOLD}🤖 [CHEF_CARTHY AI ASSISTANT]{C_RESET}")
     print(f"{C_GRAY}Analyzing query: \"{prompt}\"...{C_RESET}\n")
 
-    # Gather system context
     context = {
         "os": "Chef_Carthy OS (Arch Linux Base)",
         "kernel": subprocess.check_output(["uname", "-r"], text=True).strip(),
         "arch": subprocess.check_output(["uname", "-m"], text=True).strip(),
-        "hostname": subprocess.check_output(["hostname"], text=True).strip(),
     }
 
-    # Intelligent local cybersecurity analysis engine
     prompt_lower = prompt.lower()
 
     if any(w in prompt_lower for w in ["port", "listening", "ss", "netstat", "open"]):
@@ -182,8 +152,7 @@ def query_ai_assistant(prompt: str):
             print(f"\n{C_GRAY}{out.strip()}{C_RESET}\n")
             print(f"{C_GREEN}AI Assessment:{C_RESET}")
             print("  • All detected listening ports are local or managed system daemons.")
-            print("  • Ensure services intended only for localhost bind explicitly to 127.0.0.1 rather than 0.0.0.0.")
-            print(f"  • Recommendation: Use {C_BOLD}sudo ufw deny <port>{C_RESET} to block untrusted incoming traffic.")
+            print("  • Recommendation: Use 'sudo ufw deny <port>' to block untrusted incoming traffic.")
         except Exception as e:
             print(f"Error: {e}")
 
@@ -191,91 +160,80 @@ def query_ai_assistant(prompt: str):
         print(f"{C_CYAN}{C_BOLD}🛡️ System Hardening & Security Playbook:{C_RESET}\n")
         print("  1. Kernel Self-Protection:")
         print(f"     {C_BOLD}echo 'kernel.dmesg_restrict = 1' | sudo tee /etc/sysctl.d/99-security.conf{C_RESET}")
-        print(f"     {C_BOLD}echo 'kernel.kptr_restrict = 2' | sudo tee -a /etc/sysctl.d/99-security.conf{C_RESET}")
-        print(f"     {C_BOLD}sudo sysctl --system{C_RESET}")
         print("  2. Firewall Setup:")
-        print(f"     {C_BOLD}sudo ufw default deny incoming && sudo ufw default allow outgoing && sudo ufw enable{C_RESET}")
+        print(f"     {C_BOLD}sudo ufw default deny incoming && sudo ufw enable{C_RESET}")
         print("  3. Automated Log Watchdog:")
         print(f"     {C_BOLD}sudo systemctl enable --now auditd{C_RESET}")
 
-    elif any(w in prompt_lower for w in ["log", "auth", "journal", "brute", "failed"]):
-        print(f"{C_CYAN}{C_BOLD}📜 Authentication & System Log Analysis:{C_RESET}\n")
-        try:
-            out = subprocess.check_output(["journalctl", "-u", "systemd-logind", "-n", "10", "--no-pager"], text=True)
-            print(f"{C_GRAY}{out.strip()}{C_RESET}\n")
-            print(f"{C_GREEN}AI Assessment:{C_RESET} No anomalous authentication spikes or persistent failed login floods detected.")
-        except Exception as e:
-            print(f"Error querying journal: {e}")
-
-    elif any(w in prompt_lower for w in ["tool", "install", "wireshark", "nmap", "burp", "ghidra"]):
-        print(f"{C_CYAN}{C_BOLD}🧰 Security Toolkit Recommendations:{C_RESET}\n")
-        print("  To install security toolchains with Chef_Carthy OS:")
-        print(f"  • Network Tools:   {C_BOLD}chef tools install network{C_RESET}")
-        print(f"  • Web Auditing:    {C_BOLD}chef tools install web{C_RESET}")
-        print(f"  • Reverse Eng:     {C_BOLD}chef tools install reversing{C_RESET}")
-        print(f"  • Hardening:       {C_BOLD}chef tools install hardening{C_RESET}")
+    elif any(w in prompt_lower for w in ["tool", "install", "wireshark", "nmap", "burp", "ghidra", "bundle"]):
+        print(f"{C_CYAN}{C_BOLD}🧰 Curated Toolchain Installation:{C_RESET}\n")
+        print("  Install tool bundles instantly with:")
+        print(f"  • Network Tools:   {C_BOLD}chef pkg bundle cyber-network{C_RESET}")
+        print(f"  • Web Auditing:    {C_BOLD}chef pkg bundle cyber-web{C_RESET}")
+        print(f"  • Reverse Eng:     {C_BOLD}chef pkg bundle cyber-reversing{C_RESET}")
+        print(f"  • Forensics:       {C_BOLD}chef pkg bundle cyber-forensics{C_RESET}")
+        print(f"  • Hardening:       {C_BOLD}chef pkg bundle cyber-hardening{C_RESET}")
 
     else:
         print(f"{C_CYAN}{C_BOLD}💡 Chef_Carthy AI Advisory:{C_RESET}\n")
-        print(f"  System context: {context['os']} | Kernel {context['kernel']} | Arch {context['arch']}")
+        print(f"  System context: {context['os']} | Kernel {context['kernel']}")
         print(f"  Your query: '{prompt}'")
-        print("  Chef_Carthy OS is primed for security auditing, network analysis, and defensive operations.")
-        print(f"  Type {C_BOLD}chef --help{C_RESET} for a full list of security modules and autonomous commands.")
+        print(f"  Type {C_BOLD}chef --help{C_RESET} or {C_BOLD}chef menu{C_RESET} for the interactive control panel.")
 
     print(f"\n{C_PURPLE}───────────────────────────────────────────────────────────────────────────────{C_RESET}\n")
 
-def list_tools():
-    print(f"\n{C_CYAN}{C_BOLD}📦 [CHEF_CARTHY] SECURITY TOOLCHAIN CATALOG{C_RESET}\n")
-    for cat_id, cat_info in TOOL_CATEGORIES.items():
-        print(f"{C_PURPLE}{C_BOLD}► {cat_info['name']} [{cat_id}]{C_RESET}")
-        for pkg in cat_info["packages"]:
-            installed = shutil.which(pkg) is not None
-            status = f"{C_GREEN}✓ Installed{C_RESET}" if installed else f"{C_GRAY}Available in pacman/AUR{C_RESET}"
-            print(f"    • {C_BOLD}{pkg:<16}{C_RESET} : {status}")
-        print()
-
-def install_tools(category: str):
-    if category not in TOOL_CATEGORIES and category != "all":
-        print(f"{C_RED}Error: Unknown category '{category}'. Available: {', '.join(TOOL_CATEGORIES.keys())}, all{C_RESET}")
-        return
-
-    pkgs_to_install = []
-    if category == "all":
-        for c in TOOL_CATEGORIES.values():
-            pkgs_to_install.extend(c["packages"])
+def forward_to_script(script_name, args):
+    script_path = SCRIPT_DIR / script_name
+    if not script_path.exists():
+        script_path = Path.home() / ".local" / "bin" / script_name
+    if script_path.exists():
+        subprocess.run([str(script_path)] + args)
     else:
-        pkgs_to_install = TOOL_CATEGORIES[category]["packages"]
-
-    # Filter out already installed
-    missing = [p for p in pkgs_to_install if shutil.which(p) is None]
-    if not missing:
-        print(f"{C_GREEN}✓ All tools in '{category}' are already installed!{C_RESET}")
-        return
-
-    print(f"{C_CYAN}Installing missing tools for '{category}': {', '.join(missing)}...{C_RESET}")
-    try:
-        subprocess.run(["sudo", "pacman", "-S", "--needed", "--noconfirm"] + missing)
-    except Exception as e:
-        print(f"{C_RED}Installation failed: {e}{C_RESET}")
+        print(f"{C_RED}Error: Sub-module '{script_name}' not found.{C_RESET}")
 
 def main():
     if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help", "help"):
         print_banner()
         print(f"{C_BOLD}USAGE:{C_RESET}")
         print(f"  chef <command> [arguments...]\n")
-        print(f"{C_BOLD}COMMANDS:{C_RESET}")
-        print(f"  {C_CYAN}audit{C_RESET}                Run comprehensive security posture & hardening audit")
-        print(f"  {C_CYAN}network{C_RESET}              Scan active network interfaces, sockets & routing")
-        print(f"  {C_CYAN}ai <query>{C_RESET}           Ask the built-in AI Security Assistant for analysis/tests")
-        print(f"  {C_CYAN}tools list{C_RESET}           List all security & auditing packages by category")
-        print(f"  {C_CYAN}tools install <cat>{C_RESET}  Install tool category (network|web|forensics|reversing|hardening|all)")
-        print(f"  {C_CYAN}hud{C_RESET}                  Toggle the Chef_Carthy Cyber HUD widget in Omarchy shell")
-        print(f"  {C_CYAN}version{C_RESET}              Show Chef_Carthy OS suite version\n")
+        print(f"{C_BOLD}CORE OS COMMANDS:{C_RESET}")
+        print(f"  {C_CYAN}menu{C_RESET}                      Launch interactive TUI control center")
+        print(f"  {C_CYAN}audit{C_RESET}                     Run comprehensive security & posture audit")
+        print(f"  {C_CYAN}network{C_RESET}                   Inspect network interfaces, open ports & routing")
+        print(f"  {C_CYAN}ai <query>{C_RESET}                Ask the AI Security Assistant for analysis/tests\n")
+        print(f"{C_BOLD}PACKAGE & BUNDLE MANAGEMENT:{C_RESET}")
+        print(f"  {C_CYAN}install / pkg install{C_RESET}     Install packages with pacman & AUR")
+        print(f"  {C_CYAN}remove / pkg remove{C_RESET}       Remove packages and unused dependencies")
+        print(f"  {C_CYAN}search / pkg search{C_RESET}       Search package repositories & AUR")
+        print(f"  {C_CYAN}update / upgrade{C_RESET}          Full system upgrade + package cache clean")
+        print(f"  {C_CYAN}bundles / pkg bundles{C_RESET}     List and install curated security bundles\n")
+        print(f"{C_BOLD}THEMES & CUSTOMIZATION:{C_RESET}")
+        print(f"  {C_CYAN}theme list{C_RESET}                List available tactical themes")
+        print(f"  {C_CYAN}theme set <name>{C_RESET}          Apply a theme with synchronized Hyprland glow\n")
+        print(f"{C_BOLD}SYSTEM & BUILD TOOLS:{C_RESET}")
+        print(f"  {C_CYAN}iso{C_RESET}                       Compile standalone bootable Arch ISO (mkarchiso)")
+        print(f"  {C_CYAN}version{C_RESET}                   Display Chef_Carthy OS version\n")
         return
 
     cmd = sys.argv[1]
 
-    if cmd == "audit":
+    if cmd == "menu":
+        forward_to_script("chef-menu", sys.argv[2:])
+    elif cmd in ("pkg", "package", "packages"):
+        forward_to_script("chef-pkg", sys.argv[2:])
+    elif cmd in ("install", "i", "add"):
+        forward_to_script("chef-pkg", ["install"] + sys.argv[2:])
+    elif cmd in ("remove", "rm", "uninstall"):
+        forward_to_script("chef-pkg", ["remove"] + sys.argv[2:])
+    elif cmd in ("search", "s", "find"):
+        forward_to_script("chef-pkg", ["search"] + sys.argv[2:])
+    elif cmd in ("update", "upgrade", "up"):
+        forward_to_script("chef-pkg", ["upgrade"])
+    elif cmd in ("bundles", "bundle"):
+        forward_to_script("chef-pkg", [cmd] + sys.argv[2:])
+    elif cmd in ("theme", "themes"):
+        forward_to_script("chef-theme", sys.argv[2:])
+    elif cmd == "audit":
         print_banner()
         run_system_audit()
     elif cmd == "network":
@@ -285,20 +243,16 @@ def main():
         prompt = " ".join(sys.argv[2:]) if len(sys.argv) > 2 else "Perform a general security assessment"
         print_banner()
         query_ai_assistant(prompt)
-    elif cmd == "tools":
-        sub = sys.argv[2] if len(sys.argv) > 2 else "list"
-        if sub == "list":
-            print_banner()
-            list_tools()
-        elif sub == "install":
-            cat = sys.argv[3] if len(sys.argv) > 3 else "all"
-            install_tools(cat)
+    elif cmd == "iso":
+        iso_script = PROJECT_DIR / "iso" / "build_iso.sh"
+        if iso_script.exists():
+            subprocess.run([str(iso_script)])
         else:
-            print(f"Unknown tools subcommand: {sub}")
+            print("ISO build script not found.")
     elif cmd == "version":
-        print(f"Chef_Carthy OS Suite v{VERSION} - Cybersecurity & AI Auditing Platform")
+        print(f"Chef_Carthy OS Suite v{VERSION} - AI-Powered Cybersecurity Linux Platform")
     else:
-        # If user typed arbitrary prompt directly: `chef analyze my open ports`
+        # If user typed arbitrary prompt directly: `chef what ports are open`
         query_ai_assistant(" ".join(sys.argv[1:]))
 
 if __name__ == "__main__":
