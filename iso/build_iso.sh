@@ -20,17 +20,22 @@ fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WORK_DIR="/tmp/chef-carthy-archiso-work"
+PROFILE_DIR="/tmp/chef-iso-profile-merged"
 OUT_DIR="$SCRIPT_DIR/out"
 
-mkdir -p "$OUT_DIR"
-rm -rf "$WORK_DIR"
+mkdir -p "$OUT_DIR" "$PROFILE_DIR"
+rm -rf "$WORK_DIR" "$PROFILE_DIR"/*
+
+echo -e "${CYAN}${BOLD}🚀 Preparing Chef_Carthy OS Build Profile...${NC}"
+cp -r /usr/share/archiso/configs/releng/* "$PROFILE_DIR/"
+cp -rf "$SCRIPT_DIR/"* "$PROFILE_DIR/"
 
 echo -e "${CYAN}${BOLD}🚀 Building Chef_Carthy OS Bootable ISO...${NC}"
-echo -e "  • Profile Directory: $SCRIPT_DIR"
+echo -e "  • Profile Directory: $PROFILE_DIR"
 echo -e "  • Output Directory:  $OUT_DIR"
 echo -e "  • Work Directory:    $WORK_DIR\n"
 
-sudo mkarchiso -v -w "$WORK_DIR" -o "$OUT_DIR" "$SCRIPT_DIR"
+sudo mkarchiso -v -w "$WORK_DIR" -o "$OUT_DIR" "$PROFILE_DIR"
 
 echo -e "\n${GREEN}${BOLD}✓ Chef_Carthy OS ISO Generated Successfully!${NC}"
 echo -e "${CYAN}Output file:${NC} $(ls -lh "$OUT_DIR"/*.iso 2>/dev/null || echo "$OUT_DIR")\n"

@@ -23,8 +23,12 @@ jobs:
 
       - name: Compile Chef_Carthy OS Bootable ISO
         run: |
-          mkdir -p out /tmp/archiso-work
-          mkarchiso -v -w /tmp/archiso-work -o out iso/
+          mkdir -p /tmp/chef-iso-profile out /tmp/archiso-work
+          # Copy base releng bootloader and firmware configs
+          cp -r /usr/share/archiso/configs/releng/* /tmp/chef-iso-profile/
+          # Overlay Chef_Carthy custom profile, packages, and rootfs
+          cp -rf iso/* /tmp/chef-iso-profile/
+          mkarchiso -v -w /tmp/archiso-work -o out /tmp/chef-iso-profile/
 
       - name: Upload ISO Artifact
         uses: actions/upload-artifact@v4
