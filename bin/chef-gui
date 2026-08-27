@@ -1,0 +1,254 @@
+#!/usr/bin/env python3
+"""
+Chef_Carthy OS - Modern Glassmorphic Cyber GUI Control Center (chef-gui)
+A state-of-the-art graphical control center providing 1-click access to
+network analysis, malware forensics, web security, AI diagnostics, and theme switching.
+"""
+
+import sys
+import os
+import shutil
+import subprocess
+import tkinter as tk
+from tkinter import ttk, messagebox
+from pathlib import Path
+
+# --- Cyber Aesthetic Colors ---
+BG_DARK = "#0b0e14"
+BG_CARD = "#151922"
+BG_CARD_HOVER = "#1e2433"
+ACCENT_CYAN = "#00f0ff"
+ACCENT_PURPLE = "#8b5cf6"
+ACCENT_GREEN = "#10b981"
+ACCENT_AMBER = "#f59e0b"
+ACCENT_RED = "#ef4444"
+TEXT_WHITE = "#f3f4f6"
+TEXT_MUTED = "#9ca3af"
+
+TOOL_CATEGORIES = [
+    {
+        "title": "🔍 Malware Analysis & Reverse Engineering",
+        "color": ACCENT_PURPLE,
+        "items": [
+            ("Ghidra Reverse Engineering", "ghidra", "NSA Software Reverse Engineering suite with decompiler"),
+            ("Cutter / Rizin GUI", "cutter", "Advanced GUI for radare2 / rizin binary analysis"),
+            ("YARA Rule Matcher", "alacritty -e bash -c 'yara --help; read -p \"Press Enter to close...\"'", "Pattern matching Swiss army knife for malware analysis"),
+            ("Detect It Easy (DiE)", "die", "File type identifier, packer and compiler detector"),
+            ("GDB Binary Debugger", "alacritty -e gdb", "GNU Project Debugger for live runtime binary inspection"),
+        ]
+    },
+    {
+        "title": "🌐 Network & Traffic Forensics",
+        "color": ACCENT_CYAN,
+        "items": [
+            ("Wireshark Protocol Analyzer", "wireshark", "Deep packet inspection and live traffic capture"),
+            ("Termshark TUI Analyzer", "alacritty -e termshark", "Terminal-based Wireshark packet analyzer"),
+            ("Mitmproxy Interceptor", "alacritty -e mitmproxy", "Interactive TLS-capable intercepting HTTP/HTTPS proxy"),
+            ("Nmap Network Mapper", "alacritty -e bash -c 'nmap -h; read -p \"Press Enter to close...\"'", "Network exploration tool and security scanner"),
+        ]
+    },
+    {
+        "title": "🛡️ Defensive Hardening & System Audits",
+        "color": ACCENT_GREEN,
+        "items": [
+            ("Chef Security Posture Audit", "alacritty -e chef audit", "Autonomous host configuration and socket auditor"),
+            ("Lynis Deep System Auditor", "alacritty -e sudo lynis audit system", "Host security health check and compliance scanner"),
+            ("ClamAV Antivirus Scanner", "alacritty -e bash -c 'clamscan -r ~; read -p \"Press Enter to close...\"'", "Open-source antivirus engine for detecting malicious files"),
+            ("UFW Firewall Manager", "alacritty -e bash -c 'sudo ufw status verbose; read -p \"Press Enter to close...\"'", "Host-level packet filtering and firewall configuration"),
+        ]
+    },
+    {
+        "title": "🎓 AI Assistant & Exam Study Academy",
+        "color": ACCENT_AMBER,
+        "items": [
+            ("Interactive AI Security Agent", "alacritty -e chef agent", "Agentic AI with system file access and automated remediation"),
+            ("Cyber Exam & Cert Academy", "alacritty -e chef tutor", "Interactive tutor for Security+, CEH, and OSCP concepts"),
+            ("Chef TUI Control Center", "alacritty -e chef menu", "Keyboard-driven fast terminal dashboard"),
+        ]
+    }
+]
+
+class ChefGuiApp(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("Chef_Carthy OS — Cyber & AI Studio")
+        self.geometry("980x680")
+        self.minsize(850, 580)
+        self.configure(bg=BG_DARK)
+
+        # Style configurations
+        self.style = ttk.Style(self)
+        self.style.theme_use("clam")
+
+        self._build_header()
+        self._build_sidebar()
+        self._build_main_content()
+        self._build_footer()
+
+    def _build_header(self):
+        header_frame = tk.Frame(self, bg=BG_DARK, height=70)
+        header_frame.pack(fill="x", padx=20, pady=(15, 10))
+
+        # Title and Subtitle
+        title_label = tk.Label(
+            header_frame,
+            text="🛡️ CHEF_CARTHY OS",
+            font=("JetBrains Mono", 18, "bold"),
+            fg=ACCENT_CYAN,
+            bg=BG_DARK
+        )
+        title_label.pack(side="left")
+
+        tag_label = tk.Label(
+            header_frame,
+            text=" · Cyber & Agentic AI Studio",
+            font=("JetBrains Mono", 13),
+            fg=ACCENT_PURPLE,
+            bg=BG_DARK
+        )
+        tag_label.pack(side="left", padx=(0, 10))
+
+        # Baseline Score Badge
+        score_badge = tk.Label(
+            header_frame,
+            text="● HARDENED BASE: 88%",
+            font=("JetBrains Mono", 9, "bold"),
+            fg=ACCENT_GREEN,
+            bg=BG_CARD,
+            padx=10,
+            pady=4,
+            relief="flat",
+            highlightthickness=1,
+            highlightbackground=ACCENT_GREEN
+        )
+        score_badge.pack(side="right")
+
+    def _build_sidebar(self):
+        sidebar = tk.Frame(self, bg=BG_CARD, width=200)
+        sidebar.pack(side="left", fill="y", padx=(20, 10), pady=(0, 15))
+
+        tk.Label(
+            sidebar,
+            text="QUICK ACTIONS",
+            font=("JetBrains Mono", 8, "bold"),
+            fg=TEXT_MUTED,
+            bg=BG_CARD
+        ).pack(anchor="w", padx=15, pady=(15, 10))
+
+        actions = [
+            ("🤖 AI Assistant", "alacritty -e chef agent", ACCENT_PURPLE),
+            ("🔍 System Audit", "alacritty -e chef audit", ACCENT_CYAN),
+            ("🎓 Exam Tutor", "alacritty -e chef tutor", ACCENT_AMBER),
+            ("🌐 Network Scan", "alacritty -e chef network", ACCENT_GREEN),
+            ("📦 Install Bundles", "alacritty -e chef pkg bundles", TEXT_WHITE),
+            ("🎨 Theme Switcher", "alacritty -e chef theme list", TEXT_WHITE),
+        ]
+
+        for label, cmd, color in actions:
+            btn = tk.Button(
+                sidebar,
+                text=label,
+                font=("JetBrains Mono", 9, "bold"),
+                fg=color,
+                bg=BG_CARD,
+                activebackground=BG_CARD_HOVER,
+                activeforeground=ACCENT_CYAN,
+                bd=0,
+                cursor="hand2",
+                anchor="w",
+                padx=12,
+                pady=6,
+                command=lambda c=cmd: self._launch_command(c)
+            )
+            btn.pack(fill="x", padx=8, pady=2)
+
+    def _build_main_content(self):
+        container = tk.Frame(self, bg=BG_DARK)
+        container.pack(side="right", fill="both", expand=True, padx=(0, 20), pady=(0, 15))
+
+        # Canvas for smooth scrolling
+        canvas = tk.Canvas(container, bg=BG_DARK, highlightthickness=0)
+        scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
+        self.scrollable_frame = tk.Frame(canvas, bg=BG_DARK)
+
+        self.scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+        )
+
+        canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+
+        # Populate Category Cards
+        for cat in TOOL_CATEGORIES:
+            cat_frame = tk.Frame(self.scrollable_frame, bg=BG_CARD, bd=0, highlightthickness=1, highlightbackground="#222838")
+            cat_frame.pack(fill="x", pady=6, ipady=4)
+
+            header = tk.Label(
+                cat_frame,
+                text=cat["title"],
+                font=("JetBrains Mono", 10, "bold"),
+                fg=cat["color"],
+                bg=BG_CARD,
+                padx=12,
+                pady=6
+            )
+            header.pack(anchor="w")
+
+            for name, cmd, desc in cat["items"]:
+                item_row = tk.Frame(cat_frame, bg=BG_CARD)
+                item_row.pack(fill="x", padx=12, pady=3)
+
+                # Tool Launch Button
+                btn = tk.Button(
+                    item_row,
+                    text=f"▶ {name}",
+                    font=("JetBrains Mono", 9, "bold"),
+                    fg=TEXT_WHITE,
+                    bg="#1c2230",
+                    activebackground=ACCENT_CYAN,
+                    activeforeground=BG_DARK,
+                    bd=0,
+                    cursor="hand2",
+                    padx=10,
+                    pady=4,
+                    command=lambda c=cmd: self._launch_command(c)
+                )
+                btn.pack(side="left")
+
+                desc_label = tk.Label(
+                    item_row,
+                    text=f"— {desc}",
+                    font=("JetBrains Mono", 8),
+                    fg=TEXT_MUTED,
+                    bg=BG_CARD
+                )
+                desc_label.pack(side="left", padx=8)
+
+    def _build_footer(self):
+        footer = tk.Frame(self, bg=BG_DARK, height=25)
+        footer.pack(side="bottom", fill="x", padx=20, pady=(0, 10))
+
+        tk.Label(
+            footer,
+            text="⚡ Chef_Carthy OS v1.0.0 · Lightweight Arch Linux Security Architecture",
+            font=("JetBrains Mono", 8),
+            fg=TEXT_MUTED,
+            bg=BG_DARK
+        ).pack(side="left")
+
+    def _launch_command(self, cmd: str):
+        try:
+            subprocess.Popen(cmd, shell=True)
+        except Exception as e:
+            messagebox.showerror("Execution Error", f"Failed to launch command:\n{e}")
+
+def main():
+    app = ChefGuiApp()
+    app.mainloop()
+
+if __name__ == "__main__":
+    main()

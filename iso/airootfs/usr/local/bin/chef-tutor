@@ -113,6 +113,31 @@ TOPICS = {
 4. Reporting & Remediation Roadmaps:
    • Executive Summary + Technical Risk Matrix (CVSS scoring) + Detailed remediation steps.
 """
+    },
+    "6": {
+        "title": "Malware Analysis & Reverse Engineering",
+        "description": "Static & Dynamic analysis, Ghidra decompilation, YARA rule authoring & Memory forensics",
+        "content": """
+[🔬 Malware Analysis & Reverse Engineering Fundamentals]
+• 1. Static Analysis (Triage without execution):
+  - File Fingerprinting: Compute SHA-256 / MD5 hashes (VirusTotal / MalwareBazaar lookup).
+  - String Extraction: 'strings -a binary | grep -iE "(http|socket|key|cmd|powershell)"'
+  - Header Inspection: Parse PE/ELF headers, import address tables (IAT), and packed sections.
+  - Pattern Matching: Authoring YARA rules to detect specific byte signatures or string sequences.
+
+• 2. Dynamic Analysis (Behavioral monitoring in isolated sandboxes):
+  - File System & Process Monitoring: Tracking spawned child processes and modified files.
+  - Network Traffic Capture: Intercepting C2 callbacks via Wireshark / inetsim in isolated lab networks.
+  - API & Syscall Tracing: Using 'strace', 'ltrace', or Procmon to trace runtime behavior.
+
+• 3. Reverse Engineering & Decompilation:
+  - Disassembly: Translating compiled machine code into assembly (x86_64, ARM).
+  - Decompilation (Ghidra / Cutter / IDA): Reconstructing high-level C pseudocode to analyze program logic.
+  - Debugging (GDB / x64dbg): Setting software/hardware breakpoints, inspecting registers (RAX, RSP, RIP).
+
+• 4. Incident Response & Memory Forensics:
+  - Volatility 3: Extracting running processes, network connections, and injected DLLs from RAM dumps.
+"""
     }
 }
 

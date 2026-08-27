@@ -217,7 +217,9 @@ def main():
 
     cmd = sys.argv[1]
 
-    if cmd == "menu":
+    if cmd in ("gui", "studio", "center"):
+        forward_to_script("chef-gui", sys.argv[2:])
+    elif cmd == "menu":
         forward_to_script("chef-menu", sys.argv[2:])
     elif cmd in ("tutor", "study", "exam", "academy"):
         forward_to_script("chef-tutor", sys.argv[2:])
