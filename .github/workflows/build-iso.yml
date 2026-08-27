@@ -1,0 +1,34 @@
+name: Build Chef_Carthy OS ISO
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-iso:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+      options: --privileged
+
+    steps:
+      - name: Checkout Chef_Carthy Repository
+        uses: actions/checkout@v4
+
+      - name: Initialize Arch Linux & Install archiso
+        run: |
+          pacman -Syu --noconfirm
+          pacman -S --needed --noconfirm archiso git sudo
+
+      - name: Compile Chef_Carthy OS Bootable ISO
+        run: |
+          mkdir -p out /tmp/archiso-work
+          mkarchiso -v -w /tmp/archiso-work -o out iso/
+
+      - name: Upload ISO Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: chef-carthy-os-iso
+          path: out/*.iso
+          retention-days: 14
