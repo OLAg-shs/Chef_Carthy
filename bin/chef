@@ -219,6 +219,10 @@ def main():
 
     if cmd == "menu":
         forward_to_script("chef-menu", sys.argv[2:])
+    elif cmd in ("tutor", "study", "exam", "academy"):
+        forward_to_script("chef-tutor", sys.argv[2:])
+    elif cmd in ("agent", "bot"):
+        forward_to_script("chef-agent", sys.argv[2:])
     elif cmd in ("pkg", "package", "packages"):
         forward_to_script("chef-pkg", sys.argv[2:])
     elif cmd in ("install", "i", "add"):

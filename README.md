@@ -60,7 +60,15 @@ graph TD
 #### 5. 📊 Live Cyber HUD Bar Widget (`[ 🛡️ Cyber | 88% ]`)
 * Real-time security posture score, socket telemetry, and 1-click launchers right on your top bar.
 
-#### 6. 💿 Bootable Standalone ISO Builder (`iso/`)
+#### 6. 🎓 Interactive Cybersecurity Study & Exam Academy (`chef tutor`)
+* Interactive learning academy and cheat sheets covering **Network Packet Analysis**, **OWASP Top 10 Defenses**, **Linux Kernel Hardening**, **Cryptography**, and **PTES Auditing Methodologies** for certification exam preparation.
+
+#### 7. ⚡ Ultra-Low-Resource Performance Engine
+* **< 450 MB Idle RAM** footprint (over **10x lighter** than Windows 11).
+* **ZRAM Memory Compression** with ZSTD for lag-free performance on laptops.
+* Kernel sysctl optimizations prioritizing low disk swap latency.
+
+#### 8. 💿 Bootable Standalone ISO Builder (`iso/`)
 * Standard `archiso` recipes (`mkarchiso`) to compile bootable live `.iso` images for bare-metal or virtual machine installations.
 
 ---
@@ -82,8 +90,10 @@ cd Chef_Carthy
 | Command | Description |
 | :--- | :--- |
 | `chef menu` | Launch interactive TUI control panel |
+| `chef tutor` | Open interactive Cybersecurity Study & Exam Academy |
 | `chef audit` | Run full cybersecurity posture & hardening audit |
 | `chef ai <query>` | Ask the built-in AI Security Assistant |
+| `chef agent` | Start interactive autonomous agent session |
 | `chef network` | Inspect active interfaces, open sockets & routing |
 | `chef pkg bundles` | List all curated security & developer bundles |
 | `chef pkg bundle <id>` | Install a tool bundle (e.g. `cyber-network`, `cyber-web`) |
