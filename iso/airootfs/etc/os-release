@@ -1,0 +1,10 @@
+NAME="Chef_Carthy OS"
+PRETTY_NAME="Chef_Carthy OS (Cyber & Agentic AI Edition)"
+ID=chef_carthy
+ID_LIKE=arch
+BUILD_ID=2026.08
+ANSI_COLOR="0;36"
+HOME_URL="https://github.com/OLAg-shs/Chef_Carthy"
+SUPPORT_URL="https://github.com/OLAg-shs/Chef_Carthy/issues"
+BUG_REPORT_URL="https://github.com/OLAg-shs/Chef_Carthy/issues"
+LOGO=chef_carthy
