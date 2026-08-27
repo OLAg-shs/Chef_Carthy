@@ -245,10 +245,10 @@ def main():
     elif cmd == "network":
         print_banner()
         run_network_scan()
+    elif cmd in ("autopilot", "auto", "copilot"):
+        forward_to_script("chef-autopilot", sys.argv[2:])
     elif cmd == "ai":
-        prompt = " ".join(sys.argv[2:]) if len(sys.argv) > 2 else "Perform a general security assessment"
-        print_banner()
-        query_ai_assistant(prompt)
+        forward_to_script("chef-autopilot", sys.argv[2:])
     elif cmd == "iso":
         iso_script = PROJECT_DIR / "iso" / "build_iso.sh"
         if iso_script.exists():
@@ -258,8 +258,8 @@ def main():
     elif cmd == "version":
         print(f"Chef_Carthy OS Suite v{VERSION} - AI-Powered Cybersecurity Linux Platform")
     else:
-        # If user typed arbitrary prompt directly: `chef what ports are open`
-        query_ai_assistant(" ".join(sys.argv[1:]))
+        # If user typed arbitrary prompt directly: `chef audit my open ports`
+        forward_to_script("chef-autopilot", sys.argv[1:])
 
 if __name__ == "__main__":
     main()
