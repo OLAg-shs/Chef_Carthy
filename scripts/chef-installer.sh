@@ -31,10 +31,35 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 echo -e "${CYAN}1. Detecting Available Storage Disks:${NC}"
-lsblk -d -p -n -l -o NAME,SIZE,MODEL | grep -v "loop" | grep -v "airootfs"
+AVAILABLE_DISKS=($(lsblk -d -p -n -l -o NAME,TYPE | awk '$2=="disk" && $1 !~ /loop|zram|airootfs/ {print $1}'))
+
+if [ ${#AVAILABLE_DISKS[@]} -eq 0 ]; then
+    echo -e "${RED}Error: No suitable installation disks detected.${NC}"
+    lsblk
+    exit 1
+fi
+
+echo -e "Detected disks:"
+for d in "${AVAILABLE_DISKS[@]}"; do
+    SIZE=$(lsblk -d -n -o SIZE "$d" 2>/dev/null || echo "Unknown")
+    MODEL=$(lsblk -d -n -o MODEL "$d" 2>/dev/null || echo "Virtual/Generic Disk")
+    echo -e "  • ${BOLD}$d${NC} (${SIZE}) - $MODEL"
+done
 echo ""
 
-read -rp "Enter target disk to install Chef_Carthy OS (e.g. /dev/nvme0n1 or /dev/sda): " TARGET_DISK
+DEFAULT_DISK="${AVAILABLE_DISKS[0]}"
+
+# Ensure reading from controlling terminal when script is piped via curl | bash
+if [ -t 0 ]; then
+    INPUT_DEV="/dev/stdin"
+elif [ -e /dev/tty ]; then
+    INPUT_DEV="/dev/tty"
+else
+    INPUT_DEV="/dev/stdin"
+fi
+
+read -rp "Enter target disk to install Chef_Carthy OS [$DEFAULT_DISK]: " TARGET_DISK < "$INPUT_DEV"
+TARGET_DISK=${TARGET_DISK:-$DEFAULT_DISK}
 
 if [ ! -b "$TARGET_DISK" ]; then
     echo -e "${RED}Error: Disk $TARGET_DISK not found.${NC}"
@@ -42,16 +67,16 @@ if [ ! -b "$TARGET_DISK" ]; then
 fi
 
 echo -e "\n${YELLOW}${BOLD}⚠️ WARNING: All data on $TARGET_DISK will be permanently wiped!${NC}"
-read -rp "Are you sure you want to proceed? [y/N]: " CONFIRM
+read -rp "Are you sure you want to proceed? [y/N]: " CONFIRM < "$INPUT_DEV"
 if [[ ! "$CONFIRM" =~ ^[Yy]$ ]]; then
     echo "Installation aborted."
     exit 0
 fi
 
-read -rp "Enter username for the new system [chef_carthy]: " USERNAME
+read -rp "Enter username for the new system [chef_carthy]: " USERNAME < "$INPUT_DEV"
 USERNAME=${USERNAME:-chef_carthy}
 
-read -rp "Enter hostname for this machine [chef-laptop]: " HOSTNAME
+read -rp "Enter hostname for this machine [chef-laptop]: " HOSTNAME < "$INPUT_DEV"
 HOSTNAME=${HOSTNAME:-chef-laptop}
 
 # 2. Partitioning Disk (GPT: 1GB EFI, Rest Root)
