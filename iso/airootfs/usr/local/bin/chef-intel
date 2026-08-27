@@ -1,0 +1,186 @@
+#!/usr/bin/env python3
+"""
+Chef_Carthy OS - Real-Time Cyber Threat Intelligence & Research Engine (chef-intel)
+Fetches live cybersecurity advisories, CISA KEV vulnerabilities, CVE intelligence,
+and breaking infosec news to keep researchers and defenders up to date.
+"""
+
+import sys
+import os
+import json
+import urllib.request
+import urllib.error
+import xml.etree.ElementTree as ET
+from pathlib import Path
+
+# Terminal ANSI Styling
+C_RESET = "\033[0m"
+C_BOLD = "\033[1m"
+C_CYAN = "\033[38;5;51m"
+C_GREEN = "\033[38;5;46m"
+C_YELLOW = "\033[38;5;226m"
+C_RED = "\033[38;5;196m"
+C_PURPLE = "\033[38;5;141m"
+C_GRAY = "\033[38;5;244m"
+
+NEWS_FEEDS = {
+    "cisa": {
+        "name": "CISA Cybersecurity Alerts & Advisories",
+        "url": "https://www.cisa.gov/cybersecurity-advisories/all.xml",
+        "type": "rss"
+    },
+    "bleeping": {
+        "name": "BleepingComputer Cyber Threat News",
+        "url": "https://www.bleepingcomputer.com/feed/",
+        "type": "rss"
+    },
+    "thehackernews": {
+        "name": "The Hacker News (THN)",
+        "url": "https://feeds.feedburner.com/TheHackersNews",
+        "type": "rss"
+    }
+}
+
+def print_banner():
+    print(f"{C_PURPLE}{C_BOLD}")
+    print("   ██████╗██╗  ██╗███████╗███████╗   ██████╗ █████╗ ██████╗ ████████╗██╗  ██╗██╗   ██╗")
+    print("  ██╔════╝██║  ██║██╔════╝██╔════╝  ██╔════╝██╔══██╗██╔══██╗╚══██╔══╝██║  ██║╚██╗ ██╔╝")
+    print("  ██║     ███████║█████╗  █████╗    ██║     ███████║██████╔╝   ██║   ███████║ ╚████╔╝ ")
+    print("  ██║     ██╔══██║██╔══╝  ██╔══╝    ██║     ██╔══██║██╔══██╗   ██║   ██╔══██║  ╚██╔╝  ")
+    print("  ╚██████╗██║  ██║███████╗██║       ╚██████╗██║  ██║██║  ██║   ██║   ██║  ██║   ██║   ")
+    print("   ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝        ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝   ╚═╝   ")
+    print(f"{C_CYAN}  ► Real-Time Cyber Threat Intelligence & Security Research Engine{C_RESET}\n")
+
+def fetch_rss_feed(url: str, limit: int = 5):
+    headers = {"User-Agent": "Chef_Carthy_OS/1.0 (Cyber Research Engine)"}
+    req = urllib.request.Request(url, headers=headers)
+    try:
+        with urllib.request.urlopen(req, timeout=8) as response:
+            xml_data = response.read()
+            root = ET.fromstring(xml_data)
+            items = []
+            
+            # Standard RSS channel/item parsing
+            for item in root.findall(".//item")[:limit]:
+                title = item.findtext("title", "Untitled").strip()
+                link = item.findtext("link", "").strip()
+                pub_date = item.findtext("pubDate", "").strip()
+                desc = item.findtext("description", "").strip()
+                # Strip basic HTML tags
+                clean_desc = desc.split("<")[0].strip() if "<" in desc else desc
+                items.append({
+                    "title": title,
+                    "link": link,
+                    "date": pub_date,
+                    "desc": clean_desc[:140] + ("..." if len(clean_desc) > 140 else "")
+                })
+            return items
+    except Exception as e:
+        return [{"title": f"Feed temporarily unavailable: {e}", "link": "", "date": "", "desc": ""}]
+
+def show_breaking_news():
+    print(f"{C_CYAN}{C_BOLD}🌐 FETCHING REAL-TIME CYBERSECURITY INTELLIGENCE & ADVISORIES...{C_RESET}\n")
+    
+    for feed_id, info in NEWS_FEEDS.items():
+        print(f"{C_PURPLE}{C_BOLD}► {info['name']}{C_RESET}")
+        print(f"{C_GRAY}Source: {info['url']}{C_RESET}\n")
+        
+        items = fetch_rss_feed(info["url"], limit=4)
+        for idx, item in enumerate(items, 1):
+            if not item["link"]:
+                print(f"   {C_YELLOW}{item['title']}{C_RESET}\n")
+                continue
+            print(f"  {C_CYAN}[{idx}]{C_RESET} {C_BOLD}{item['title']}{C_RESET}")
+            if item['date']:
+                print(f"      {C_GRAY}Published: {item['date']}{C_RESET}")
+            if item['desc']:
+                print(f"      {C_YELLOW}{item['desc']}{C_RESET}")
+            print(f"      {C_GRAY}Link: {item['link']}{C_RESET}\n")
+        print(f"{C_PURPLE}───────────────────────────────────────────────────────────────────────────────{C_RESET}\n")
+
+def query_cve(cve_id: str):
+    cve_clean = cve_id.strip().upper()
+    if not cve_clean.startswith("CVE-"):
+        cve_clean = f"CVE-{cve_clean}"
+    
+    print(f"\n{C_CYAN}{C_BOLD}🔍 [CVE RESEARCH] Querying NIST National Vulnerability Database for {cve_clean}...{C_RESET}\n")
+    url = f"https://services.nvd.nist.gov/rest/json/cves/2.0?cveId={cve_clean}"
+    headers = {"User-Agent": "Chef_Carthy_OS/1.0"}
+    req = urllib.request.Request(url, headers=headers)
+    
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            vulns = data.get("vulnerabilities", [])
+            if not vulns:
+                print(f"{C_YELLOW}No records found for {cve_clean} in NIST NVD.{C_RESET}\n")
+                return
+
+            cve_data = vulns[0].get("cve", {})
+            desc = "No description available."
+            for d in cve_data.get("descriptions", []):
+                if d.get("lang") == "en":
+                    desc = d.get("value")
+                    break
+
+            metrics = cve_data.get("metrics", {})
+            cvss_score = "N/A"
+            cvss_severity = "UNKNOWN"
+            if "cvssMetricV31" in metrics:
+                cvss_info = metrics["cvssMetricV31"][0]["cvssData"]
+                cvss_score = cvss_info.get("baseScore", "N/A")
+                cvss_severity = cvss_info.get("baseSeverity", "N/A")
+
+            print(f"  {C_BOLD}Vulnerability:{C_RESET} {C_PURPLE}{cve_clean}{C_RESET}")
+            print(f"  {C_BOLD}CVSS 3.1 Score:{C_RESET} {C_RED if str(cvss_severity) in ('HIGH', 'CRITICAL') else C_YELLOW}{cvss_score} ({cvss_severity}){C_RESET}")
+            print(f"  {C_BOLD}Published Date:{C_RESET} {cve_data.get('published', 'N/A')}")
+            print(f"  {C_BOLD}Last Modified:{C_RESET}  {cve_data.get('lastModified', 'N/A')}\n")
+            print(f"  {C_BOLD}Executive Summary:{C_RESET}")
+            print(f"  {C_GRAY}{desc}{C_RESET}\n")
+
+    except Exception as e:
+        print(f"{C_RED}Failed to fetch CVE data: {e}{C_RESET}\n")
+
+def show_team_matrix():
+    print(f"\n{C_PURPLE}{C_BOLD}═══════════════════════════════════════════════════════════════════════════════{C_RESET}")
+    print(f"{C_CYAN}{C_BOLD}🛡️ RED TEAM vs BLUE TEAM TACTICAL METHODOLOGY MATRIX{C_RESET}")
+    print(f"{C_PURPLE}═══════════════════════════════════════════════════════════════════════════════{C_RESET}\n")
+
+    print(f"{C_RED}{C_BOLD}⚔️ RED TEAM (Adversary Emulation & Offensive Security Assessment):{C_RESET}")
+    print("  • Scope & Rules of Engagement: Strict legal boundaries, defined authorized IP ranges & targets.")
+    print("  • Reconnaissance (OSINT): Passive footprinting, DNS records, public subdomains, tech stack discovery.")
+    print("  • Vulnerability Analysis: Scanning for misconfigurations, outdated CVEs, unauthenticated API endpoints.")
+    print("  • Threat Emulation: Simulating realistic adversary techniques to validate detection efficacy.")
+    print("  • Reporting: Producing actionable remediation matrices with CVSS severity scoring.\n")
+
+    print(f"{C_CYAN}{C_BOLD}🛡️ BLUE TEAM (Defensive Security, Threat Hunting & Incident Response):{C_RESET}")
+    print("  • Hardening & Posture: Kernel self-protection (sysctl), host firewalls (UFW), SUID pruning.")
+    print("  • Detection Engineering: Authoring YARA rules, Sigma detection signatures, Suricata IDS rules.")
+    print("  • Traffic Forensics: Deep packet inspection (Wireshark), spotting beaconing and C2 channels.")
+    print("  • Memory & Endpoint Forensics: Volatility 3 RAM dumps, artifact carving (Foremost/Sleuthkit).")
+    print("  • Threat Intelligence (CTI): Integrating real-time feeds, IoC tracking, and vulnerability patching.\n")
+
+    print(f"{C_PURPLE}{C_BOLD}🤝 PURPLE TEAM (Collaborative Continuous Validation):{C_RESET}")
+    print("  • Red and Blue teams iterate together to build defenses immediately following simulated attacks.\n")
+    print(f"{C_PURPLE}═══════════════════════════════════════════════════════════════════════════════{C_RESET}\n")
+
+def main():
+    print_banner()
+    if len(sys.argv) < 2 or sys.argv[1] in ("news", "feed", "latest", "breaking"):
+        show_breaking_news()
+    elif sys.argv[1] in ("cve", "lookup", "vuln"):
+        if len(sys.argv) > 2:
+            query_cve(sys.argv[2])
+        else:
+            print("Usage: chef intel cve <CVE-ID> (e.g. chef intel cve CVE-2024-3094)")
+    elif sys.argv[1] in ("teams", "matrix", "red-blue", "tactics"):
+        show_team_matrix()
+    else:
+        # If user typed arbitrary research query: `chef intel CVE-2024-3094`
+        if "cve" in sys.argv[1].lower():
+            query_cve(sys.argv[1])
+        else:
+            show_breaking_news()
+
+if __name__ == "__main__":
+    main()
