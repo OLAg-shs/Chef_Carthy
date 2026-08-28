@@ -41,8 +41,10 @@ echo -e "  ${GREEN}✓ Deployed Cyber HUD plugin to ~/.config/omarchy/plugins/cu
 echo -e "\n${CYAN}3. Deploying Hyprland & Terminal Configs...${NC}"
 mkdir -p "$HOME/.config/hypr" "$HOME/.config/alacritty" "$HOME/.config/starship"
 cp "$INSTALL_DIR/configs/hypr/hyprland.conf" "$HOME/.config/hypr/chef-hyprland.conf" || true
-cp "$INSTALL_DIR/configs/alacritty/alacritty.toml" "$HOME/.config/alacritty/chef-alacritty.toml" || true
-cp "$INSTALL_DIR/configs/starship/starship.toml" "$HOME/.config/starship/chef-starship.toml" || true
+cp "$INSTALL_DIR/configs/hypr/hyprland.conf" "$HOME/.config/hypr/hyprland.conf" || true
+rm -f "$HOME/.config/hypr/hyprland.lua" 2>/dev/null || true
+cp "$INSTALL_DIR/configs/alacritty/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml" || true
+cp "$INSTALL_DIR/configs/starship/starship.toml" "$HOME/.config/starship/starship.toml" || true
 echo -e "  ${GREEN}✓ Saved desktop configs to ~/.config/${NC}"
 
 # 4. Kernel & System Security Hardening
