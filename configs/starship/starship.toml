@@ -1,33 +1,28 @@
-# Chef_Carthy OS - Starship Prompt Configuration
-# High performance, minimal latency, cyber aesthetics
-
-format = """
-[┌─](bold #7000ff)$directory$git_branch$git_status$package$python
-[└─>](bold #00f0ff) """
-
+# Chef_Carthy OS - Clean Modern Minimalist Shell Prompt
 add_newline = false
 
+format = """
+$directory$git_branch$git_status$nodejs$rust$golang$python$cmd_duration
+$character"""
+
 [directory]
-style = "bold #00f0ff"
-truncation_length = 3
+style = "bold #58a6ff"
+truncation_length = 4
 truncate_to_repo = true
-read_only = " 🔒"
+read_only = " 󰌾"
+
+[character]
+success_symbol = "[❯](bold #3fb950) "
+error_symbol = "[❯](bold #f85149) "
 
 [git_branch]
-style = "bold #7000ff"
-symbol = "🌱 "
+symbol = " "
+style = "bold #8b949e"
 
 [git_status]
-style = "bold #ec4899"
-
-[package]
-style = "bold #ffb000"
-symbol = "📦 "
-
-[python]
-style = "bold #10b981"
-symbol = "🐍 "
+style = "bold #d29922"
 
 [cmd_duration]
 min_time = 2_000
-style = "bold #f59e0b"
+style = "bold #8b949e"
+format = "[$duration]($style) "

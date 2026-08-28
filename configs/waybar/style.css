@@ -76,29 +76,22 @@ window#waybar {
     color: #c9d1d9;
 }
 
-/* Center Status Badge */
-#custom-chef_status {
-    background-color: rgba(88, 166, 255, 0.10);
-    color: #79c0ff;
-    border: 1px solid rgba(88, 166, 255, 0.35);
-    padding: 0 14px;
+/* Center Clock Module */
+#clock {
+    padding: 0 16px;
     margin: 3px 0;
+    background-color: #161b22;
+    border: 1px solid #30363d;
     border-radius: 6px;
-    font-size: 11px;
+    color: #e6edf3;
+    font-weight: 700;
     letter-spacing: 0.5px;
-    transition: all 0.2s ease;
-}
-
-#custom-chef_status:hover {
-    background-color: rgba(88, 166, 255, 0.20);
-    border: 1px solid #58a6ff;
 }
 
 /* Right Status Modules */
 #pulseaudio,
 #cpu,
 #memory,
-#clock,
 #custom-power {
     padding: 0 10px;
     margin: 3px 2px;
@@ -118,11 +111,6 @@ window#waybar {
 
 #pulseaudio {
     color: #a371f7;
-}
-
-#clock {
-    color: #58a6ff;
-    font-weight: bold;
 }
 
 #custom-power {

@@ -14,17 +14,16 @@
         "hyprland/workspaces"
     ],
     "modules-center": [
-        "custom/chef_status"
+        "clock"
     ],
     "modules-right": [
         "pulseaudio",
         "cpu",
         "memory",
-        "clock",
         "custom/power"
     ],
     "custom/logo": {
-        "format": "🛡️ CHEF OS",
+        "format": "🛡️ Chef OS",
         "tooltip-format": "Chef_Carthy OS Control Center (Click to open)",
         "on-click": "alacritty -t 'Chef Control Center' -e chef menu"
     },
@@ -49,11 +48,6 @@
         "format": "{name}",
         "on-click": "activate"
     },
-    "custom/chef_status": {
-        "format": "⚡ CYBER & AGENTIC AI CORE",
-        "tooltip": false,
-        "on-click": "chef-gui"
-    },
     "pulseaudio": {
         "format": "{icon} {volume}%",
         "format-muted": "🔇 Muted",
@@ -63,15 +57,15 @@
         "on-click": "pavucontrol || alacritty"
     },
     "cpu": {
-        "format": "⚡ {usage}%",
+        "format": " {usage}%",
         "interval": 2
     },
     "memory": {
-        "format": "🧠 {percentage}%",
+        "format": " {percentage}%",
         "interval": 2
     },
     "clock": {
-        "format": "🕒 {:%a %b %d  %H:%M}",
+        "format": " {:%A, %B %d   %H:%M}",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
     },
     "custom/power": {
