@@ -95,8 +95,21 @@ if [ -f "$HOME/.zshrc" ] && ! grep -q "alias chef=" "$HOME/.zshrc"; then
 fi
 echo -e "  ${GREEN}✓ Added 'chef' alias to shell profile${NC}"
 
-# 6. Apply Default Cyber Theme & Wallpaper
-echo -e "\n${CYAN}6. Activating Default Tactical Theme & Dynamic Wallpaper...${NC}"
+# 6. Deploy Default Wallpapers & Enable Services
+echo -e "\n${CYAN}6. Deploying Wallpapers & Activating Services...${NC}"
+mkdir -p "$HOME/.config/chef_carthy/wallpapers" "$HOME/Pictures/wallpapers" "$HOME/Downloads/wallpapers"
+cp -rn "$INSTALL_DIR/configs/wallpapers/"* "$HOME/.config/chef_carthy/wallpapers/" 2>/dev/null || true
+cp -rn "$INSTALL_DIR/configs/wallpapers/"* "$HOME/Pictures/wallpapers/" 2>/dev/null || true
+cp -rn "$INSTALL_DIR/configs/wallpapers/"* "$HOME/Downloads/wallpapers/" 2>/dev/null || true
+
+# Auto-install openssh and terminal if missing
+if command -v pacman >/dev/null 2>&1 && [ "$EUID" -eq 0 -o -w /var/lib/pacman ]; then
+    pacman -S --needed --noconfirm openssh foot 2>/dev/null || true
+    systemctl enable --now sshd 2>/dev/null || true
+fi
+
+# 7. Apply Default Cyber Theme & Wallpaper
+echo -e "\n${CYAN}7. Activating Default Tactical Theme & Dynamic Wallpaper...${NC}"
 "$HOME/.local/bin/chef-theme" set cyber-cyan || true
 "$HOME/.local/bin/chef-wallpaper" next || true
 

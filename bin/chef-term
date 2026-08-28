@@ -1,0 +1,14 @@
+#!/bin/bash
+# ==============================================================================
+# Chef_Carthy OS - Universal Terminal Launcher (chef-term)
+# Finds and launches the active Wayland/Linux terminal emulator without popups
+# ==============================================================================
+
+for term in foot alacritty kitty xfce4-terminal gnome-terminal xterm; do
+    if command -v "$term" >/dev/null 2>&1; then
+        exec "$term" "$@"
+    fi
+done
+
+echo "Error: No terminal emulator found (installed: foot, alacritty, kitty, xterm)." >&2
+exit 1

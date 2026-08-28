@@ -25,22 +25,22 @@
     "custom/logo": {
         "format": "🛡️ Chef OS",
         "tooltip-format": "Chef_Carthy OS Dashboard (Click to open menu)",
-        "on-click": "alacritty -t 'Chef Control Center' -e chef menu"
+        "on-click": "chef-term -e chef menu"
     },
     "custom/terminal": {
         "format": " Term",
-        "tooltip-format": "Terminal (SUPER+Return / SUPER+O / SUPER+T)",
-        "on-click": "alacritty || kitty || foot"
+        "tooltip-format": "Open Terminal Directly",
+        "on-click": "chef-term"
     },
     "custom/launcher": {
         "format": " Apps",
-        "tooltip-format": "App Launcher (SUPER+Space)",
+        "tooltip-format": "App Launcher (SUPER+Space / SUPER+W)",
         "on-click": "pkill wofi || wofi --show drun"
     },
     "custom/files": {
         "format": " Files",
         "tooltip-format": "File Manager (SUPER+E)",
-        "on-click": "thunar || alacritty -e yazi"
+        "on-click": "thunar || chef-term -e yazi"
     },
     "hyprland/workspaces": {
         "disable-scroll": true,
@@ -58,7 +58,7 @@
         "format-icons": {
             "default": ["🔈", "🔉", "🔊"]
         },
-        "on-click": "pavucontrol || alacritty"
+        "on-click": "pavucontrol || chef-term"
     },
     "cpu": {
         "format": " {usage}%",
@@ -71,6 +71,6 @@
     "custom/power": {
         "format": "⏻",
         "tooltip-format": "Power Menu / Shutdown",
-        "on-click": "wlogout || alacritty -e bash -c 'read -p \"Press Enter to shut down...\" && sudo poweroff'"
+        "on-click": "wlogout || chef-term -e bash -c 'read -p \"Press Enter to shut down...\" && sudo poweroff'"
     }
 }

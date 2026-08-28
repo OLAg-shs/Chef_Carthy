@@ -21,11 +21,15 @@ WALLPAPER_CONFIG = CONFIG_DIR / "wallpaper.json"
 PID_FILE = CONFIG_DIR / "wallpaper_rotator.pid"
 
 DEFAULT_WALLPAPER_DIRS = [
-    Path.home() / "Downloads" / "wallpapers",
+    Path.home() / ".config" / "chef_carthy" / "wallpapers",
     Path.home() / "Pictures" / "wallpapers",
     Path.home() / "Pictures" / "wallpaper",
-    Path.home() / ".config" / "chef_carthy" / "wallpapers",
-    Path.home() / ".config" / "omarchy" / "themes"
+    Path.home() / "Pictures",
+    Path.home() / "Downloads" / "wallpapers",
+    Path.home() / "Downloads",
+    Path.home() / ".config" / "omarchy" / "themes",
+    Path("/usr/share/backgrounds"),
+    Path("/usr/share/hyprland")
 ]
 
 # ANSI Styling
