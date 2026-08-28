@@ -39,7 +39,7 @@ echo -e "  ${GREEN}✓ Deployed Cyber HUD plugin to ~/.config/omarchy/plugins/cu
 
 # 3. Deploy Desktop Themes & Configurations
 echo -e "\n${CYAN}3. Deploying Hyprland, Waybar & Cyber Desktop Configs...${NC}"
-mkdir -p "$HOME/.config/hypr" "$HOME/.config/alacritty" "$HOME/.config/starship" "$HOME/.config/waybar" "$HOME/.config/wofi"
+mkdir -p "$HOME/.config/hypr" "$HOME/.config/alacritty" "$HOME/.config/starship" "$HOME/.config/waybar" "$HOME/.config/wofi" "$HOME/.config/mako"
 cp "$INSTALL_DIR/configs/hypr/hyprland.conf" "$HOME/.config/hypr/chef-hyprland.conf" || true
 cp "$INSTALL_DIR/configs/hypr/hyprland.conf" "$HOME/.config/hypr/hyprland.conf" || true
 rm -f "$HOME/.config/hypr/hyprland.lua" 2>/dev/null || true
@@ -47,6 +47,7 @@ cp "$INSTALL_DIR/configs/waybar/"* "$HOME/.config/waybar/" 2>/dev/null || true
 cp "$INSTALL_DIR/configs/wofi/"* "$HOME/.config/wofi/" 2>/dev/null || true
 cp "$INSTALL_DIR/configs/alacritty/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml" || true
 cp "$INSTALL_DIR/configs/starship/starship.toml" "$HOME/.config/starship/starship.toml" || true
+cp "$INSTALL_DIR/configs/mako/"* "$HOME/.config/mako/" 2>/dev/null || true
 echo -e "  ${GREEN}✓ Saved desktop configs to ~/.config/${NC}"
 
 # 4. Kernel & System Security Hardening

@@ -1,40 +1,40 @@
-# Chef_Carthy OS - Alacritty Terminal Theme
+# Chef_Carthy OS - Alacritty Terminal Theme (Omarchy-Inspired)
 
 [window]
-padding = { x = 12, y = 12 }
-opacity = 0.88
-blur = true
+padding = { x = 14, y = 14 }
+opacity = 0.96
+blur = false
 decorations = "none"
 
 [font]
-size = 10.5
+size = 11.0
 normal = { family = "JetBrainsMono Nerd Font", style = "Regular" }
 bold = { family = "JetBrainsMono Nerd Font", style = "Bold" }
 
 [colors.primary]
-background = "#0b0e14"
+background = "#0d1118"
 foreground = "#e6edf3"
 
 [colors.cursor]
-text = "#0b0e14"
-cursor = "#00f0ff"
+text = "#0d1118"
+cursor = "#58a6ff"
 
 [colors.normal]
-black = "#1f2430"
-red = "#ff3333"
-green = "#00ff66"
-yellow = "#ffb000"
-blue = "#00f0ff"
-magenta = "#a855f7"
-cyan = "#00f0ff"
+black = "#161b22"
+red = "#f85149"
+green = "#3fb950"
+yellow = "#d29922"
+blue = "#58a6ff"
+magenta = "#bc8cff"
+cyan = "#79c0ff"
 white = "#e6edf3"
 
 [colors.bright]
-black = "#4b5563"
-red = "#ff6666"
-green = "#33ff88"
-yellow = "#ffd166"
-blue = "#33f3ff"
-magenta = "#c084fc"
-cyan = "#67e8f9"
+black = "#484f58"
+red = "#ff7b72"
+green = "#56d364"
+yellow = "#e3b341"
+blue = "#79c0ff"
+magenta = "#d2a8ff"
+cyan = "#a5d6ff"
 white = "#ffffff"

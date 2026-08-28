@@ -1,58 +1,100 @@
 * {
     border: none;
     border-radius: 0;
-    font-family: "JetBrains Mono Nerd Font", "JetBrains Mono", monospace;
+    font-family: "JetBrainsMono Nerd Font", "JetBrains Mono", monospace;
     font-size: 12px;
-    font-weight: bold;
+    font-weight: 600;
 }
 
 window#waybar {
-    background-color: rgba(11, 14, 20, 0.90);
-    border: 1px solid rgba(0, 240, 255, 0.35);
-    border-radius: 10px;
-    color: #f3f4f6;
+    background-color: rgba(13, 17, 24, 0.94);
+    border: 1px solid rgba(88, 166, 255, 0.30);
+    border-radius: 8px;
+    color: #e6edf3;
 }
 
+/* Chef Logo Button */
 #custom-logo {
-    background: linear-gradient(135deg, #00f0ff, #8b5cf6);
+    background: linear-gradient(135deg, #1f6feb, #7aa2f7);
     color: #0b0e14;
     padding: 0 12px;
-    margin: 3px 6px;
+    margin: 3px 4px 3px 6px;
     border-radius: 6px;
-    font-weight: 900;
+    font-weight: 800;
+    transition: all 0.2s ease;
+}
+
+#custom-logo:hover {
+    background: linear-gradient(135deg, #388bfd, #89b4fa);
+}
+
+/* Quick Action Launchers (Terminal, Apps, Files) */
+#custom-terminal,
+#custom-launcher,
+#custom-files {
+    padding: 0 10px;
+    margin: 3px 2px;
+    background-color: #161b22;
+    color: #58a6ff;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+}
+
+#custom-terminal:hover,
+#custom-launcher:hover,
+#custom-files:hover {
+    background-color: #21262d;
+    color: #79c0ff;
+    border: 1px solid #58a6ff;
+}
+
+/* Workspaces */
+#workspaces {
+    margin-left: 4px;
 }
 
 #workspaces button {
     padding: 0 8px;
     margin: 3px 2px;
-    background-color: #151922;
-    color: #9ca3af;
+    background-color: #161b22;
+    color: #8b949e;
     border-radius: 6px;
-    border: 1px solid #1f293d;
+    border: 1px solid #30363d;
+    transition: all 0.15s ease;
 }
 
 #workspaces button.active {
-    background-color: rgba(0, 240, 255, 0.20);
-    color: #00f0ff;
-    border: 1px solid #00f0ff;
+    background-color: rgba(88, 166, 255, 0.18);
+    color: #58a6ff;
+    border: 1px solid #58a6ff;
+    font-weight: bold;
 }
 
-#window {
-    color: #9ca3af;
-    padding: 0 8px;
+#workspaces button:hover {
+    background-color: #21262d;
+    color: #c9d1d9;
 }
 
+/* Center Status Badge */
 #custom-chef_status {
-    background-color: rgba(139, 92, 246, 0.15);
-    color: #a78bfa;
-    border: 1px solid rgba(139, 92, 246, 0.40);
+    background-color: rgba(88, 166, 255, 0.10);
+    color: #79c0ff;
+    border: 1px solid rgba(88, 166, 255, 0.35);
     padding: 0 14px;
     margin: 3px 0;
     border-radius: 6px;
     font-size: 11px;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
 }
 
+#custom-chef_status:hover {
+    background-color: rgba(88, 166, 255, 0.20);
+    border: 1px solid #58a6ff;
+}
+
+/* Right Status Modules */
 #pulseaudio,
 #cpu,
 #memory,
@@ -60,26 +102,39 @@ window#waybar {
 #custom-power {
     padding: 0 10px;
     margin: 3px 2px;
-    background-color: #151922;
-    border: 1px solid #1f293d;
+    background-color: #161b22;
+    border: 1px solid #30363d;
     border-radius: 6px;
+    color: #c9d1d9;
 }
 
 #cpu {
-    color: #10b981;
+    color: #3fb950;
 }
 
 #memory {
-    color: #f59e0b;
+    color: #d29922;
+}
+
+#pulseaudio {
+    color: #a371f7;
 }
 
 #clock {
-    color: #00f0ff;
+    color: #58a6ff;
+    font-weight: bold;
 }
 
 #custom-power {
-    background-color: rgba(239, 68, 68, 0.20);
-    color: #ef4444;
-    border: 1px solid #ef4444;
+    background-color: rgba(248, 81, 73, 0.15);
+    color: #f85149;
+    border: 1px solid rgba(248, 81, 73, 0.40);
     padding: 0 10px;
+    margin-right: 6px;
+    transition: all 0.2s ease;
+}
+
+#custom-power:hover {
+    background-color: rgba(248, 81, 73, 0.30);
+    border: 1px solid #f85149;
 }

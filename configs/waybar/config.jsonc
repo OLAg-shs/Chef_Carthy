@@ -8,8 +8,10 @@
     "margin-right": 10,
     "modules-left": [
         "custom/logo",
-        "hyprland/workspaces",
-        "hyprland/window"
+        "custom/terminal",
+        "custom/launcher",
+        "custom/files",
+        "hyprland/workspaces"
     ],
     "modules-center": [
         "custom/chef_status"
@@ -23,19 +25,29 @@
     ],
     "custom/logo": {
         "format": "🛡️ CHEF OS",
-        "tooltip": false,
-        "on-click": "alacritty -e chef menu"
+        "tooltip-format": "Chef_Carthy OS Control Center (Click to open)",
+        "on-click": "alacritty -t 'Chef Control Center' -e chef menu"
+    },
+    "custom/terminal": {
+        "format": " Terminal",
+        "tooltip-format": "Launch Terminal (SUPER+Return / SUPER+O / SUPER+T)",
+        "on-click": "alacritty || kitty || foot"
+    },
+    "custom/launcher": {
+        "format": " Apps",
+        "tooltip-format": "Launch App Menu (SUPER+Space)",
+        "on-click": "pkill wofi || wofi --show drun"
+    },
+    "custom/files": {
+        "format": " Files",
+        "tooltip-format": "Open File Manager (SUPER+E)",
+        "on-click": "thunar || alacritty -e yazi"
     },
     "hyprland/workspaces": {
         "disable-scroll": true,
         "all-outputs": true,
         "format": "{name}",
         "on-click": "activate"
-    },
-    "hyprland/window": {
-        "format": "▸ {title}",
-        "max-length": 40,
-        "separate-outputs": true
     },
     "custom/chef_status": {
         "format": "⚡ CYBER & AGENTIC AI CORE",
