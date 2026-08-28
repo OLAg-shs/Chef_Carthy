@@ -1,0 +1,85 @@
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "JetBrains Mono Nerd Font", "JetBrains Mono", monospace;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+window#waybar {
+    background-color: rgba(11, 14, 20, 0.90);
+    border: 1px solid rgba(0, 240, 255, 0.35);
+    border-radius: 10px;
+    color: #f3f4f6;
+}
+
+#custom-logo {
+    background: linear-gradient(135deg, #00f0ff, #8b5cf6);
+    color: #0b0e14;
+    padding: 0 12px;
+    margin: 3px 6px;
+    border-radius: 6px;
+    font-weight: 900;
+}
+
+#workspaces button {
+    padding: 0 8px;
+    margin: 3px 2px;
+    background-color: #151922;
+    color: #9ca3af;
+    border-radius: 6px;
+    border: 1px solid #1f293d;
+}
+
+#workspaces button.active {
+    background-color: rgba(0, 240, 255, 0.20);
+    color: #00f0ff;
+    border: 1px solid #00f0ff;
+}
+
+#window {
+    color: #9ca3af;
+    padding: 0 8px;
+}
+
+#custom-chef_status {
+    background-color: rgba(139, 92, 246, 0.15);
+    color: #a78bfa;
+    border: 1px solid rgba(139, 92, 246, 0.40);
+    padding: 0 14px;
+    margin: 3px 0;
+    border-radius: 6px;
+    font-size: 11px;
+    letter-spacing: 1px;
+}
+
+#pulseaudio,
+#cpu,
+#memory,
+#clock,
+#custom-power {
+    padding: 0 10px;
+    margin: 3px 2px;
+    background-color: #151922;
+    border: 1px solid #1f293d;
+    border-radius: 6px;
+}
+
+#cpu {
+    color: #10b981;
+}
+
+#memory {
+    color: #f59e0b;
+}
+
+#clock {
+    color: #00f0ff;
+}
+
+#custom-power {
+    background-color: rgba(239, 68, 68, 0.20);
+    color: #ef4444;
+    border: 1px solid #ef4444;
+    padding: 0 10px;
+}

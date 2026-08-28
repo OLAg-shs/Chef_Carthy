@@ -1,0 +1,70 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 34,
+    "spacing": 6,
+    "margin-top": 6,
+    "margin-left": 10,
+    "margin-right": 10,
+    "modules-left": [
+        "custom/logo",
+        "hyprland/workspaces",
+        "hyprland/window"
+    ],
+    "modules-center": [
+        "custom/chef_status"
+    ],
+    "modules-right": [
+        "pulseaudio",
+        "cpu",
+        "memory",
+        "clock",
+        "custom/power"
+    ],
+    "custom/logo": {
+        "format": "🛡️ CHEF OS",
+        "tooltip": false,
+        "on-click": "alacritty -e chef menu"
+    },
+    "hyprland/workspaces": {
+        "disable-scroll": true,
+        "all-outputs": true,
+        "format": "{name}",
+        "on-click": "activate"
+    },
+    "hyprland/window": {
+        "format": "▸ {title}",
+        "max-length": 40,
+        "separate-outputs": true
+    },
+    "custom/chef_status": {
+        "format": "⚡ CYBER & AGENTIC AI CORE",
+        "tooltip": false,
+        "on-click": "chef-gui"
+    },
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-muted": "🔇 Muted",
+        "format-icons": {
+            "default": ["🔈", "🔉", "🔊"]
+        },
+        "on-click": "pavucontrol || alacritty"
+    },
+    "cpu": {
+        "format": "⚡ {usage}%",
+        "interval": 2
+    },
+    "memory": {
+        "format": "🧠 {percentage}%",
+        "interval": 2
+    },
+    "clock": {
+        "format": "🕒 {:%a %b %d  %H:%M}",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+    },
+    "custom/power": {
+        "format": "⏻",
+        "tooltip": false,
+        "on-click": "wlogout || alacritty -e bash -c 'read -p \"Press Enter to shut down...\" && sudo poweroff'"
+    }
+}
