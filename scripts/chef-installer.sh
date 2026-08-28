@@ -107,9 +107,9 @@ mount "$PART_ROOT" /mnt
 mkdir -p /mnt/boot
 mount "$PART_EFI" /mnt/boot
 
-# 5. Pacstrap Base System
-echo -e "\n${CYAN}5. Installing Base Arch Linux System & Hyprland...${NC}"
-pacstrap /mnt base base-devel linux linux-firmware sudo networkmanager pipewire pipewire-pulse wireplumber hyprland alacritty foot python python-pip git starship btop eza bat fd ripgrep wl-clipboard wtype curl wget which nano
+# 5. Pacstrap Base System & GUI Desktop Suite
+echo -e "\n${CYAN}5. Installing Base Arch Linux System, GUI Desktop & Cyber Suite...${NC}"
+pacstrap /mnt base base-devel linux linux-firmware sudo networkmanager pipewire pipewire-pulse wireplumber hyprland waybar wofi swaybg mako sddm polkit-gnome alacritty foot python python-pip tk mesa vulkan-mesa-layers open-vm-tools xf86-video-vmware ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji git starship btop eza bat fd ripgrep wl-clipboard wtype curl wget which nano
 
 # 6. Generate FSTAB
 echo -e "\n${CYAN}6. Generating /etc/fstab...${NC}"
@@ -134,9 +134,35 @@ echo "$USERNAME:chef" | chpasswd
 echo "root:chef" | chpasswd
 echo "%wheel ALL=(ALL:ALL) ALL" >> /etc/sudoers
 
-# Enable services
+# Enable services for full GUI & networking
 systemctl enable NetworkManager
+systemctl enable sddm
+systemctl enable vmtoolsd
 systemctl enable systemd-boot-update.service
+
+# Create Hyprland VM Launcher Wrapper
+cat << 'WRAPPER_EOF' > /usr/local/bin/chef-session
+#!/bin/bash
+export AQ_NO_MODIFIERS=1
+export WLR_NO_HARDWARE_CURSORS=1
+export LIBGL_ALWAYS_SOFTWARE=1
+export XDG_CURRENT_DESKTOP=Hyprland
+export XDG_SESSION_TYPE=wayland
+export XDG_SESSION_DESKTOP=Hyprland
+exec Hyprland
+WRAPPER_EOF
+chmod +x /usr/local/bin/chef-session
+
+# Create Wayland Desktop Entry for SDDM
+mkdir -p /usr/share/wayland-sessions
+cat << 'DESKTOP_EOF' > /usr/share/wayland-sessions/chef.desktop
+[Desktop Entry]
+Name=Chef_Carthy OS (Cyber & AI)
+Comment=Cybersecurity & Agentic AI Hyprland Desktop
+Exec=/usr/local/bin/chef-session
+Type=Application
+DesktopNames=Hyprland
+DESKTOP_EOF
 
 # Bootloader (systemd-boot)
 bootctl install
