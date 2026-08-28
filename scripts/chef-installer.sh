@@ -109,7 +109,7 @@ mount "$PART_EFI" /mnt/boot
 
 # 5. Pacstrap Base System & GUI Desktop Suite
 echo -e "\n${CYAN}5. Installing Base Arch Linux System, GUI Desktop & Cyber Suite...${NC}"
-pacstrap /mnt base base-devel linux linux-firmware sudo networkmanager pipewire pipewire-pulse wireplumber hyprland waybar wofi swaybg mako sddm polkit-gnome alacritty foot python python-pip tk mesa vulkan-mesa-layers open-vm-tools xf86-video-vmware ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji git starship btop eza bat fd ripgrep wl-clipboard wtype curl wget which nano
+pacstrap /mnt base base-devel linux linux-firmware sudo networkmanager openssh pipewire pipewire-pulse wireplumber hyprland waybar wofi swaybg mako sddm polkit-gnome alacritty foot python python-pip tk mesa vulkan-mesa-layers open-vm-tools xf86-video-vmware ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji git starship btop eza bat fd ripgrep wl-clipboard wtype curl wget which nano
 
 # 6. Generate FSTAB
 echo -e "\n${CYAN}6. Generating /etc/fstab...${NC}"
@@ -137,7 +137,8 @@ echo "%wheel ALL=(ALL:ALL) ALL" >> /etc/sudoers
 # Enable services for full GUI & networking
 systemctl enable NetworkManager
 systemctl enable sddm
-systemctl enable vmtoolsd
+systemctl enable sshd
+systemctl enable vmtoolsd 2>/dev/null || true
 systemctl enable systemd-boot-update.service
 
 # Create Hyprland VM Launcher Wrapper

@@ -16,6 +16,7 @@ sudo
 # Networking & Connectivity
 networkmanager
 networkmanager-openvpn
+openssh
 wireless_tools
 wpa_supplicant
 iwd
