@@ -2,7 +2,7 @@
 """
 Chef_Carthy OS - Custom Unified Package Manager & Bundle Installer (chef-pkg)
 Provides a friendly, beautiful, color-coded package manager wrapping pacman & yay
-with category bundles, search caching, and dependency verification.
+with category bundles, BlackArch security repository integration, and dependency verification.
 """
 
 import sys
@@ -24,36 +24,51 @@ C_GRAY = "\033[38;5;244m"
 BUNDLES = {
     "core": {
         "name": "Core Desktop & Wayland Suite",
-        "description": "Hyprland, Waybar, Alacritty, Foot, Starship, PipeWire audio & tools",
-        "packages": ["hyprland", "xdg-desktop-portal-hyprland", "alacritty", "foot", "starship", "btop", "eza", "bat", "fd", "ripgrep", "wl-clipboard", "wtype", "grim", "slurp", "swaybg"]
+        "description": "Hyprland, Waybar, Alacritty, Foot, Starship, PipeWire audio & terminal utilities",
+        "packages": ["hyprland", "xdg-desktop-portal-hyprland", "alacritty", "foot", "starship", "btop", "eza", "bat", "fd", "ripgrep", "wl-clipboard", "wtype", "grim", "slurp", "swaybg", "mako"]
     },
-    "cyber-network": {
-        "name": "Network & Protocol Analysis",
-        "description": "Packet inspection, port scanning & traffic tools",
-        "packages": ["wireshark-qt", "tcpdump", "termshark", "nmap", "net-tools", "iftop", "traceroute", "ethtool"]
+    "cyber-recon": {
+        "name": "Automated Reconnaissance & Network Discovery",
+        "description": "Port scanning, service enumeration, DNS probing & active mapping",
+        "packages": ["nmap", "masscan", "traceroute", "whois", "bind", "net-tools", "arp-scan", "fping"]
     },
     "cyber-web": {
-        "name": "Web Application & API Auditing",
-        "description": "HTTP proxies, REST clients & web auditing utilities",
-        "packages": ["mitmproxy", "curlie", "httpie", "curl", "wget", "nikto"]
+        "name": "Web Application & API Security",
+        "description": "HTTP proxies, REST clients, vulnerability scanners & directory fuzzers",
+        "packages": ["mitmproxy", "curlie", "httpie", "curl", "wget", "nikto", "sqlmap", "ffuf"]
+    },
+    "cyber-sniffing": {
+        "name": "Traffic Inspection & Packet Analysis",
+        "description": "Deep packet analysis, terminal analyzers & protocol decoders",
+        "packages": ["wireshark-qt", "tcpdump", "termshark", "iftop", "ethtool", "ngrep"]
+    },
+    "cyber-wireless": {
+        "name": "Wireless & RF Security Assessment",
+        "description": "802.11 monitor mode, packet capture & wireless audit utilities",
+        "packages": ["aircrack-ng", "iw", "wireless_tools", "kismet"]
+    },
+    "cyber-passwords": {
+        "name": "Credential & Password Auditing",
+        "description": "Hash identification, offline cracking & authentication testing",
+        "packages": ["john", "hashcat", "hydra", "crunch"]
     },
     "cyber-forensics": {
-        "name": "Forensics & Incident Response",
-        "description": "Disk analysis, data extraction & artifact carving",
-        "packages": ["sleuthkit", "binwalk", "foremost", "testdisk", "hexedit", "ddrescue"]
+        "name": "Digital Forensics & Incident Response",
+        "description": "Filesystem forensics, artifact carving & data extraction",
+        "packages": ["sleuthkit", "binwalk", "foremost", "testdisk", "hexedit", "ddrescue", "exiftool"]
     },
     "cyber-reversing": {
         "name": "Reverse Engineering & Binary Analysis",
-        "description": "Disassemblers, debuggers, system tracing tools",
+        "description": "Disassemblers, debuggers, system call tracers & binary analyzers",
         "packages": ["radare2", "gdb", "strace", "ltrace", "valgrind", "patchelf"]
     },
-    "cyber-hardening": {
-        "name": "System Hardening & Defensive Shield",
-        "description": "Host firewall, antivirus, audit daemons & rootkit hunter",
-        "packages": ["ufw", "fail2ban", "clamav", "lynis", "audit", "rkhunter"]
+    "cyber-defense": {
+        "name": "Blue Team & Host Hardening Shield",
+        "description": "Host firewall, intrusion detection, rootkit scanning & auditing daemons",
+        "packages": ["ufw", "fail2ban", "clamav", "lynis", "audit", "rkhunter", "chkrootkit"]
     },
     "dev": {
-        "name": "Developer & System Runtimes",
+        "name": "Developer & Automation Toolchain",
         "description": "Python, Rust, C/C++, Docker, Git and Neovim",
         "packages": ["git", "neovim", "python", "python-pip", "python-requests", "gcc", "clang", "make", "cmake", "docker", "docker-compose"]
     }
@@ -129,9 +144,36 @@ def run_system_upgrade():
     except Exception as e:
         print(f"\n{C_RED}Upgrade error: {e}{C_RESET}\n")
 
+def bootstrap_blackarch():
+    print(f"\n{C_PURPLE}{C_BOLD}═══════════════════════════════════════════════════════════════════════════════{C_RESET}")
+    print(f"{C_CYAN}{C_BOLD}🛡️ BLACKARCH LINUX SECURITY REPOSITORY INTEGRATION{C_RESET}")
+    print(f"{C_PURPLE}═══════════════════════════════════════════════════════════════════════════════{C_RESET}\n")
+    print(f"  {C_GRAY}This will add the official BlackArch repository keyring and mirrors to /etc/pacman.conf{C_RESET}")
+    print(f"  {C_GRAY}granting instant access to 2,800+ penetration testing & defensive security tools.{C_RESET}\n")
+
+    strap_script = "/tmp/blackarch-strap.sh"
+    try:
+        print(f"  {C_CYAN}1. Fetching official BlackArch strap installer...{C_RESET}")
+        subprocess.run(["curl", "-s", "-o", strap_script, "https://blackarch.org/strap.sh"], check=True)
+        os.chmod(strap_script, 0o755)
+
+        print(f"  {C_CYAN}2. Verifying and activating BlackArch repository...{C_RESET}")
+        subprocess.run(["sudo", strap_script], check=True)
+
+        print(f"  {C_CYAN}3. Synchronizing repository package databases...{C_RESET}")
+        subprocess.run(["sudo", "pacman", "-Syy"], check=True)
+
+        print(f"\n{C_GREEN}{C_BOLD}✓ BlackArch Security Repository successfully integrated!{C_RESET}")
+        print(f"{C_GRAY}You can now search and install any tool: {C_BOLD}pacman -Ss <tool>{C_RESET}\n")
+    except Exception as e:
+        print(f"\n{C_RED}{C_BOLD}✗ Failed to bootstrap BlackArch repository: {e}{C_RESET}\n")
+    finally:
+        if os.path.exists(strap_script):
+            os.remove(strap_script)
+
 def list_bundles():
     print(f"\n{C_PURPLE}{C_BOLD}═══════════════════════════════════════════════════════════════════════════════{C_RESET}")
-    print(f"{C_CYAN}{C_BOLD}📦 CHEF_CARTHY OS - CURATED TOOLCHAIN BUNDLES{C_RESET}")
+    print(f"{C_CYAN}{C_BOLD}📦 CHEF_CARTHY OS - CURATED CYBERSECURITY & DEV BUNDLES{C_RESET}")
     print(f"{C_PURPLE}═══════════════════════════════════════════════════════════════════════════════{C_RESET}\n")
     
     for b_id, b in BUNDLES.items():
@@ -144,7 +186,8 @@ def list_bundles():
         print(f"    {C_GRAY}Packages:{C_RESET} {', '.join(b['packages'])}")
         print()
 
-    print(f"{C_GRAY}To install a bundle: {C_BOLD}chef pkg bundle <bundle-id>{C_RESET}\n")
+    print(f"{C_GRAY}To install a bundle: {C_BOLD}chef pkg bundle <bundle-id>{C_RESET}")
+    print(f"{C_GRAY}To add 2,800+ BlackArch tools: {C_BOLD}chef pkg blackarch{C_RESET}\n")
 
 def install_bundle(bundle_id):
     if bundle_id not in BUNDLES:
@@ -163,7 +206,8 @@ def main():
         print(f"  {C_CYAN}search <query>{C_RESET}         Search for packages in official repos & AUR")
         print(f"  {C_CYAN}update / upgrade{C_RESET}       Full system and AUR upgrade + cache clean")
         print(f"  {C_CYAN}bundles{C_RESET}                List all curated cybersecurity & dev bundles")
-        print(f"  {C_CYAN}bundle <id>{C_RESET}            Install a full curated bundle\n")
+        print(f"  {C_CYAN}bundle <id>{C_RESET}            Install a full curated bundle")
+        print(f"  {C_CYAN}blackarch{C_RESET}              Bootstrap official BlackArch repository (2,800+ tools)\n")
         return
 
     cmd = sys.argv[1]
@@ -183,6 +227,8 @@ def main():
             install_bundle(sys.argv[2])
         else:
             list_bundles()
+    elif cmd in ("blackarch", "bootstrap-blackarch"):
+        bootstrap_blackarch()
     else:
         # Default fallback to install
         run_install(sys.argv[1:])

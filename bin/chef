@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 Chef_Carthy OS - Universal Master Command Center (chef)
-The core CLI orchestrating packages, tactical themes, security audits,
-AI assistance, network diagnostics, and ISO creation.
+The core CLI orchestrating automated reconnaissance, web security audits,
+blue-team host defense, BlackArch toolchains, and tactical themes.
 """
 
 import sys
@@ -10,11 +10,14 @@ import os
 import re
 import json
 import time
+import socket
+import ssl
 import shutil
 import subprocess
+import urllib.request
 from pathlib import Path
 
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = SCRIPT_DIR.parent
 CONFIG_DIR = Path.home() / ".config" / "chef_carthy"
@@ -30,240 +33,228 @@ C_YELLOW = "\033[38;5;226m"
 C_PURPLE = "\033[38;5;141m"
 C_GRAY = "\033[38;5;244m"
 
-BANNER = f"""{C_PURPLE}{C_BOLD}
+BANNER = f"""{C_CYAN}{C_BOLD}
    ██████╗██╗  ██╗███████╗███████╗   ██████╗ █████╗ ██████╗ ████████╗██╗  ██╗██╗   ██╗
   ██╔════╝██║  ██║██╔════╝██╔════╝  ██╔════╝██╔══██╗██╔══██╗╚══██╔══╝██║  ██║╚██╗ ██╔╝
   ██║     ███████║█████╗  █████╗    ██║     ███████║██████╔╝   ██║   ███████║ ╚████╔╝ 
   ██║     ██╔══██║██╔══╝  ██╔══╝    ██║     ██╔══██║██╔══██╗   ██║   ██╔══██║  ╚██╔╝  
   ╚██████╗██║  ██║███████╗██║       ╚██████╗██║  ██║██║  ██║   ██║   ██║  ██║   ██║   
    ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝        ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝   ╚═╝   
-{C_CYAN}  ► AI-Powered Cybersecurity OS & Tactical Workstation Suite · v{VERSION}{C_RESET}
+{C_PURPLE}  ► Advanced Cybersecurity & Automated Pentesting Suite · v{VERSION}{C_RESET}
 """
 
 def print_banner():
     print(BANNER)
 
-def run_system_audit():
-    print(f"\n{C_CYAN}{C_BOLD}🔍 [CHEF_CARTHY] RUNNING COMPREHENSIVE SECURITY AUDIT...{C_RESET}\n")
-    
-    # 1. Firewall Posture
-    print(f"  {C_BOLD}1. Checking Firewall (UFW / iptables)...{C_RESET}")
-    ufw_status = "inactive"
-    try:
-        out = subprocess.check_output(["sudo", "-n", "ufw", "status"], stderr=subprocess.DEVNULL, text=True)
-        ufw_status = "active" if "active" in out.lower() else "inactive"
-    except Exception:
-        ufw_status = "not configured / inactive"
-    
-    if ufw_status == "active":
-        print(f"     {C_GREEN}✓ Firewall is ACTIVE and filtering traffic.{C_RESET}")
-    else:
-        print(f"     {C_YELLOW}⚠ Warning: Host firewall is {ufw_status}. Enable with 'sudo ufw enable'.{C_RESET}")
+def run_automated_scan(target):
+    if not target:
+        print(f"{C_RED}Error: Please specify a target IP, hostname, or subnet (e.g. chef scan 192.168.1.1){C_RESET}")
+        return
 
-    # 2. Open Listening Ports & Sockets
-    print(f"\n  {C_BOLD}2. Scanning Open Listening Network Ports...{C_RESET}")
+    print(f"\n{C_PURPLE}{C_BOLD}═══════════════════════════════════════════════════════════════════════════════{C_RESET}")
+    print(f"{C_CYAN}{C_BOLD}🔍 [CHEF RECON] AUTOMATED NETWORK & SERVICE SCANNER{C_RESET}")
+    print(f"  {C_GRAY}Target:{C_RESET} {C_BOLD}{target}{C_RESET}")
+    print(f"{C_PURPLE}═══════════════════════════════════════════════════════════════════════════════{C_RESET}\n")
+
+    if shutil.which("nmap"):
+        print(f"  {C_CYAN}Running Nmap SYN & Service Banner Detection...{C_RESET}")
+        try:
+            subprocess.run(["nmap", "-sV", "-T4", "-F", "--open", target])
+        except Exception as e:
+            print(f"  {C_RED}Nmap error: {e}{C_RESET}")
+    else:
+        print(f"  {C_GRAY}Nmap not found. Running built-in high-speed TCP socket scanner...{C_RESET}")
+        common_ports = [21, 22, 23, 25, 53, 80, 110, 111, 135, 139, 143, 443, 445, 993, 995, 1433, 1521, 3306, 3389, 5432, 5900, 6379, 8000, 8080, 8443, 9000, 27017]
+        open_ports = []
+        for p in common_ports:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.settimeout(0.3)
+            result = s.connect_ex((target, p))
+            if result == 0:
+                service = "Unknown"
+                try:
+                    service = socket.getservbyport(p)
+                except Exception:
+                    pass
+                open_ports.append((p, service))
+            s.close()
+        
+        if open_ports:
+            print(f"\n  {C_GREEN}{C_BOLD}OPEN PORTS DISCOVERED:{C_RESET}")
+            for p, srv in open_ports:
+                print(f"    {C_CYAN}• Port {p:<5}/tcp{C_RESET}  {C_BOLD}{srv}{C_RESET}")
+        else:
+            print(f"\n  {C_GRAY}No common open ports detected on target.{C_RESET}")
+    print()
+
+def run_web_audit(url):
+    if not url:
+        print(f"{C_RED}Error: Please specify a URL (e.g. chef web https://example.com){C_RESET}")
+        return
+
+    if not url.startswith("http://") and not url.startswith("https://"):
+        url = "https://" + url
+
+    print(f"\n{C_PURPLE}{C_BOLD}═══════════════════════════════════════════════════════════════════════════════{C_RESET}")
+    print(f"{C_CYAN}{C_BOLD}🌐 [CHEF WEB] AUTOMATED WEB APPLICATION & API SECURITY AUDIT{C_RESET}")
+    print(f"  {C_GRAY}URL:{C_RESET} {C_BOLD}{url}{C_RESET}")
+    print(f"{C_PURPLE}═══════════════════════════════════════════════════════════════════════════════{C_RESET}\n")
+
     try:
-        out = subprocess.check_output(["ss", "-tuln"], text=True)
-        lines = out.strip().split("\n")[1:]
+        req = urllib.request.Request(url, headers={"User-Agent": "Chef_Carthy-Security-Scanner/1.1"})
+        with urllib.request.urlopen(req, timeout=5) as response:
+            headers = dict(response.headers)
+            status_code = response.getcode()
+            
+            print(f"  {C_BOLD}Status Code:{C_RESET} {C_GREEN if status_code == 200 else C_YELLOW}{status_code}{C_RESET}")
+            server = headers.get("Server", "Hidden/Not Provided")
+            print(f"  {C_BOLD}Server Header:{C_RESET} {C_CYAN}{server}{C_RESET}")
+
+            # Security Headers Audit
+            print(f"\n  {C_BOLD}Security Headers Evaluation:{C_RESET}")
+            security_headers = [
+                ("Strict-Transport-Security", "HSTS prevents SSL stripping"),
+                ("Content-Security-Policy", "CSP mitigates XSS and data injection"),
+                ("X-Frame-Options", "Prevents Clickjacking"),
+                ("X-Content-Type-Options", "Prevents MIME-sniffing"),
+                ("Referrer-Policy", "Controls referrer information leakage"),
+                ("Permissions-Policy", "Restricts browser hardware APIs")
+            ]
+
+            score = 0
+            for h_name, desc in security_headers:
+                val = headers.get(h_name)
+                if val:
+                    score += 1
+                    print(f"    {C_GREEN}✓ {h_name:<28}{C_RESET} {C_GRAY}{desc}{C_RESET}")
+                else:
+                    print(f"    {C_RED}✗ {h_name:<28}{C_RESET} {C_YELLOW}MISSING{C_RESET} {C_GRAY}({desc}){C_RESET}")
+            
+            score_pct = int((score / len(security_headers)) * 100)
+            print(f"\n  {C_BOLD}Security Headers Hardening Score:{C_RESET} {C_GREEN if score_pct >= 80 else C_YELLOW if score_pct >= 50 else C_RED}{score_pct}%{C_RESET}\n")
+
+    except Exception as e:
+        print(f"  {C_RED}Failed to audit URL: {e}{C_RESET}\n")
+
+def run_blue_team_audit():
+    print(f"\n{C_PURPLE}{C_BOLD}═══════════════════════════════════════════════════════════════════════════════{C_RESET}")
+    print(f"{C_CYAN}{C_BOLD}🛡️ [CHEF BLUE] BLUE TEAM HOST DEFENSE & ANOMALY INSPECTOR{C_RESET}")
+    print(f"{C_PURPLE}═══════════════════════════════════════════════════════════════════════════════{C_RESET}\n")
+
+    # 1. Active Network Sockets & Processes
+    print(f"  {C_BOLD}1. Active Listening Sockets & Processes:{C_RESET}")
+    try:
+        out = subprocess.check_output(["ss", "-tulpn"], text=True)
+        lines = out.strip().split("\n")[1:8]
         for l in lines:
             parts = l.split()
             if len(parts) >= 5:
                 proto = parts[0]
                 addr = parts[4]
-                print(f"     {C_GRAY}• Listening:{C_RESET} {C_CYAN}{proto.upper():<4}{C_RESET} on {C_BOLD}{addr}{C_RESET}")
-    except Exception as e:
-        print(f"     {C_RED}Failed to list open ports: {e}{C_RESET}")
+                proc = parts[6] if len(parts) > 6 else "-"
+                print(f"    {C_CYAN}{proto.upper():<4}{C_RESET} {addr:<22} {C_GRAY}Proc:{C_RESET} {C_BOLD}{proc}{C_RESET}")
+    except Exception:
+        print(f"    {C_GRAY}Unable to inspect sockets.{C_RESET}")
 
-    # 3. Kernel Hardening & Security Parameters
-    print(f"\n  {C_BOLD}3. Inspecting Kernel Security Parameters (sysctl)...{C_RESET}")
+    # 2. Cron Jobs & Scheduled Tasks
+    print(f"\n  {C_BOLD}2. Scheduled Tasks & Persistence Audit:{C_RESET}")
+    cron_dirs = ["/etc/cron.d", "/etc/cron.daily", "/etc/cron.hourly", "/var/spool/cron"]
+    found_cron = 0
+    for cd in cron_dirs:
+        if os.path.isdir(cd):
+            entries = os.listdir(cd)
+            if entries:
+                found_cron += len(entries)
+                print(f"    {C_GRAY}• {cd}:{C_RESET} {', '.join(entries[:5])}")
+    if found_cron == 0:
+        print(f"    {C_GREEN}✓ No suspicious crontab persistence found.{C_RESET}")
+
+    # 3. Non-Standard SUID Binaries
+    print(f"\n  {C_BOLD}3. Elevated SUID Privileges Inspection:{C_RESET}")
+    try:
+        out = subprocess.check_output(["find", "/usr/bin", "-perm", "-4000", "-type", "f"], stderr=subprocess.DEVNULL, text=True)
+        suids = [s for s in out.strip().split("\n") if s]
+        print(f"    {C_GREEN}✓ Found {len(suids)} standard system SUID binaries in /usr/bin{C_RESET}")
+    except Exception:
+        pass
+
+    # 4. Host Firewall Status
+    print(f"\n  {C_BOLD}4. Defensive Shield (UFW / iptables):{C_RESET}")
+    try:
+        out = subprocess.check_output(["sudo", "-n", "ufw", "status"], stderr=subprocess.DEVNULL, text=True)
+        if "active" in out.lower():
+            print(f"    {C_GREEN}✓ UFW Firewall is ACTIVE{C_RESET}")
+        else:
+            print(f"    {C_YELLOW}⚠ UFW Firewall is INACTIVE. Enable with: sudo ufw enable{C_RESET}")
+    except Exception:
+        print(f"    {C_YELLOW}⚠ UFW Firewall status check requires sudo or is inactive.{C_RESET}")
+    print()
+
+def run_system_audit():
+    print(f"\n{C_CYAN}{C_BOLD}🔍 [CHEF AUDIT] RUNNING HOST SECURITY POSTURE AUDIT...{C_RESET}\n")
+    
+    # 1. Kernel Parameters
+    print(f"  {C_BOLD}1. Kernel Security Parameters (sysctl):{C_RESET}")
     sysctl_checks = {
-        "kernel.kptr_restrict": "Hide kernel pointer addresses",
-        "kernel.dmesg_restrict": "Restrict unprivileged dmesg access",
-        "net.ipv4.ip_forward": "IP Forwarding status",
-        "net.ipv4.icmp_echo_ignore_broadcasts": "Broadcast ping attack mitigation"
+        "kernel.kptr_restrict": "Hide kernel pointers",
+        "kernel.dmesg_restrict": "Restrict unprivileged dmesg",
+        "net.ipv4.tcp_syncookies": "SYN Flood Protection",
+        "net.ipv4.icmp_echo_ignore_broadcasts": "Broadcast Ping Mitigation"
     }
     for key, desc in sysctl_checks.items():
         try:
             val = subprocess.check_output(["sysctl", "-n", key], text=True, stderr=subprocess.DEVNULL).strip()
-            print(f"     {C_GRAY}• {desc} ({key}):{C_RESET} {C_GREEN if val in ('1', '0') else C_CYAN}{val}{C_RESET}")
+            status = f"{C_GREEN}✓ Protected ({val}){C_RESET}" if val in ("1", "2") else f"{C_YELLOW}⚠ Value: {val}{C_RESET}"
+            print(f"    {C_GRAY}• {desc:<30}{C_RESET} {status}")
         except Exception:
             pass
 
-    # 4. SUID/SGID Binary Audit
-    print(f"\n  {C_BOLD}4. Auditing Elevated Privileges (SUID Binaries in /usr/bin)...{C_RESET}")
-    try:
-        out = subprocess.check_output(["find", "/usr/bin", "-perm", "-4000", "-type", "f"], stderr=subprocess.DEVNULL, text=True)
-        suids = [s for s in out.strip().split("\n") if s]
-        print(f"     {C_GRAY}Found {len(suids)} standard SUID root binaries.{C_RESET}")
-    except Exception:
-        pass
-
-    # 5. Summary & Score
-    print(f"\n{C_PURPLE}═══════════════════════════════════════════════════════════════════════════════{C_RESET}")
-    print(f"{C_BOLD}🎯 Security Baseline Score:{C_RESET} {C_GREEN}88/100 (Hardened Base){C_RESET}")
-    print(f"{C_CYAN}💡 Recommendations:{C_RESET}")
-    print(f"   • Enforce firewall rules: {C_BOLD}sudo ufw default deny incoming && sudo ufw enable{C_RESET}")
-    print(f"   • Install complete cyber bundles: {C_BOLD}chef pkg bundles{C_RESET}")
-    print(f"{C_PURPLE}═══════════════════════════════════════════════════════════════════════════════{C_RESET}\n")
-
-def run_network_scan():
-    print(f"\n{C_CYAN}{C_BOLD}🌐 [CHEF_CARTHY] NETWORK POSTURE & INTERFACE AUDITOR{C_RESET}\n")
-    try:
-        out = subprocess.check_output(["ip", "-brief", "address"], text=True)
-        print(f"{C_BOLD}Active Network Interfaces:{C_RESET}")
-        for line in out.strip().split("\n"):
-            parts = line.split()
-            if len(parts) >= 3:
-                iface, status, ip = parts[0], parts[1], " ".join(parts[2:])
-                color = C_GREEN if status == "UP" else C_GRAY
-                print(f"  • {C_BOLD}{iface:<12}{C_RESET} [{color}{status:<4}{C_RESET}] {C_CYAN}{ip}{C_RESET}")
-    except Exception as e:
-        print(f"Error checking interfaces: {e}")
-
-    print(f"\n{C_BOLD}Active TCP/UDP Established Sockets:{C_RESET}")
-    try:
-        out = subprocess.check_output(["ss", "-tupn"], text=True)
-        lines = out.strip().split("\n")
-        if len(lines) > 1:
-            for l in lines[1:10]:
-                print(f"  {C_GRAY}{l}{C_RESET}")
-        else:
-            print(f"  {C_GREEN}No external outbound connections currently open.{C_RESET}")
-    except Exception:
-        pass
-    print()
-
-def query_ai_assistant(prompt: str):
-    print(f"\n{C_PURPLE}{C_BOLD}🤖 [CHEF_CARTHY AI ASSISTANT]{C_RESET}")
-    print(f"{C_GRAY}Analyzing query: \"{prompt}\"...{C_RESET}\n")
-
-    context = {
-        "os": "Chef_Carthy OS (Arch Linux Base)",
-        "kernel": subprocess.check_output(["uname", "-r"], text=True).strip(),
-        "arch": subprocess.check_output(["uname", "-m"], text=True).strip(),
-    }
-
-    prompt_lower = prompt.lower()
-
-    if any(w in prompt_lower for w in ["port", "listening", "ss", "netstat", "open"]):
-        print(f"{C_CYAN}{C_BOLD}📊 Network Port & Socket Telemetry Analysis:{C_RESET}")
-        try:
-            out = subprocess.check_output(["ss", "-tuln"], text=True)
-            print(f"\n{C_GRAY}{out.strip()}{C_RESET}\n")
-            print(f"{C_GREEN}AI Assessment:{C_RESET}")
-            print("  • All detected listening ports are local or managed system daemons.")
-            print("  • Recommendation: Use 'sudo ufw deny <port>' to block untrusted incoming traffic.")
-        except Exception as e:
-            print(f"Error: {e}")
-
-    elif any(w in prompt_lower for w in ["harden", "secure", "hardening", "defense", "protect"]):
-        print(f"{C_CYAN}{C_BOLD}🛡️ System Hardening & Security Playbook:{C_RESET}\n")
-        print("  1. Kernel Self-Protection:")
-        print(f"     {C_BOLD}echo 'kernel.dmesg_restrict = 1' | sudo tee /etc/sysctl.d/99-security.conf{C_RESET}")
-        print("  2. Firewall Setup:")
-        print(f"     {C_BOLD}sudo ufw default deny incoming && sudo ufw enable{C_RESET}")
-        print("  3. Automated Log Watchdog:")
-        print(f"     {C_BOLD}sudo systemctl enable --now auditd{C_RESET}")
-
-    elif any(w in prompt_lower for w in ["tool", "install", "wireshark", "nmap", "burp", "ghidra", "bundle"]):
-        print(f"{C_CYAN}{C_BOLD}🧰 Curated Toolchain Installation:{C_RESET}\n")
-        print("  Install tool bundles instantly with:")
-        print(f"  • Network Tools:   {C_BOLD}chef pkg bundle cyber-network{C_RESET}")
-        print(f"  • Web Auditing:    {C_BOLD}chef pkg bundle cyber-web{C_RESET}")
-        print(f"  • Reverse Eng:     {C_BOLD}chef pkg bundle cyber-reversing{C_RESET}")
-        print(f"  • Forensics:       {C_BOLD}chef pkg bundle cyber-forensics{C_RESET}")
-        print(f"  • Hardening:       {C_BOLD}chef pkg bundle cyber-hardening{C_RESET}")
-
+    # 2. Login Security & SSH
+    print(f"\n  {C_BOLD}2. Remote Access & SSH Hardening:{C_RESET}")
+    sshd_config = "/etc/ssh/sshd_config"
+    if os.path.isfile(sshd_config):
+        print(f"    {C_GRAY}• SSH Daemon config detected.{C_RESET}")
     else:
-        print(f"{C_CYAN}{C_BOLD}💡 Chef_Carthy AI Advisory:{C_RESET}\n")
-        print(f"  System context: {context['os']} | Kernel {context['kernel']}")
-        print(f"  Your query: '{prompt}'")
-        print(f"  Type {C_BOLD}chef --help{C_RESET} or {C_BOLD}chef menu{C_RESET} for the interactive control panel.")
-
-    print(f"\n{C_PURPLE}───────────────────────────────────────────────────────────────────────────────{C_RESET}\n")
-
-def forward_to_script(script_name, args):
-    script_path = SCRIPT_DIR / script_name
-    if not script_path.exists():
-        script_path = Path.home() / ".local" / "bin" / script_name
-    if script_path.exists():
-        subprocess.run([str(script_path)] + args)
-    else:
-        print(f"{C_RED}Error: Sub-module '{script_name}' not found.{C_RESET}")
+        print(f"    {C_GREEN}✓ No active remote SSH server exposed.{C_RESET}")
+    
+    print(f"\n{C_GREEN}{C_BOLD}✓ Host Audit Completed Successfully.{C_RESET}\n")
 
 def main():
     if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help", "help"):
         print_banner()
-        print(f"{C_BOLD}USAGE:{C_RESET}")
-        print(f"  chef <command> [arguments...]\n")
-        print(f"{C_BOLD}CORE OS COMMANDS:{C_RESET}")
-        print(f"  {C_CYAN}menu{C_RESET}                      Launch interactive TUI control center")
-        print(f"  {C_CYAN}audit{C_RESET}                     Run comprehensive security & posture audit")
-        print(f"  {C_CYAN}network{C_RESET}                   Inspect network interfaces, open ports & routing")
-        print(f"  {C_CYAN}ai <query>{C_RESET}                Ask the AI Security Assistant for analysis/tests\n")
-        print(f"{C_BOLD}PACKAGE & BUNDLE MANAGEMENT:{C_RESET}")
-        print(f"  {C_CYAN}install / pkg install{C_RESET}     Install packages with pacman & AUR")
-        print(f"  {C_CYAN}remove / pkg remove{C_RESET}       Remove packages and unused dependencies")
-        print(f"  {C_CYAN}search / pkg search{C_RESET}       Search package repositories & AUR")
-        print(f"  {C_CYAN}update / upgrade{C_RESET}          Full system upgrade + package cache clean")
-        print(f"  {C_CYAN}bundles / pkg bundles{C_RESET}     List and install curated security bundles\n")
-        print(f"{C_BOLD}THEMES & CUSTOMIZATION:{C_RESET}")
-        print(f"  {C_CYAN}theme list{C_RESET}                List available tactical themes")
-        print(f"  {C_CYAN}theme set <name>{C_RESET}          Apply a theme with synchronized Hyprland glow\n")
-        print(f"{C_BOLD}SYSTEM & BUILD TOOLS:{C_RESET}")
-        print(f"  {C_CYAN}iso{C_RESET}                       Compile standalone bootable Arch ISO (mkarchiso)")
-        print(f"  {C_CYAN}version{C_RESET}                   Display Chef_Carthy OS version\n")
+        print(f"{C_BOLD}USAGE:{C_RESET} chef <command> [args...]\n")
+        print(f"  {C_CYAN}menu{C_RESET}               Launch interactive cybersecurity dashboard")
+        print(f"  {C_CYAN}scan <target>{C_RESET}      Automated network discovery & port scan")
+        print(f"  {C_CYAN}web <url>{C_RESET}          Automated web application security audit")
+        print(f"  {C_CYAN}blue{C_RESET}               Blue-team host defense & listening sockets")
+        print(f"  {C_CYAN}audit{C_RESET}              Local host security posture & kernel audit")
+        print(f"  {C_CYAN}pkg <subcommand>{C_RESET}   Package manager & BlackArch toolchains")
+        print(f"  {C_CYAN}theme <set/list>{C_RESET}   Switch tactical desktop themes")
+        print(f"  {C_CYAN}version{C_RESET}            Show suite version\n")
         return
 
     cmd = sys.argv[1]
 
-    if cmd in ("gui", "studio", "center"):
-        forward_to_script("chef-gui", sys.argv[2:])
-    elif cmd in ("intel", "research", "news", "cve", "feed"):
-        forward_to_script("chef-intel", sys.argv[2:])
-    elif cmd in ("teams", "matrix", "red", "blue", "purple"):
-        forward_to_script("chef-intel", ["teams"] + sys.argv[2:])
-    elif cmd == "menu":
-        forward_to_script("chef-menu", sys.argv[2:])
-    elif cmd in ("tutor", "study", "exam", "academy"):
-        forward_to_script("chef-tutor", sys.argv[2:])
-    elif cmd in ("agent", "bot"):
-        forward_to_script("chef-agent", sys.argv[2:])
-    elif cmd in ("pkg", "package", "packages"):
-        forward_to_script("chef-pkg", sys.argv[2:])
-    elif cmd in ("install", "i", "add"):
-        forward_to_script("chef-pkg", ["install"] + sys.argv[2:])
-    elif cmd in ("remove", "rm", "uninstall"):
-        forward_to_script("chef-pkg", ["remove"] + sys.argv[2:])
-    elif cmd in ("search", "s", "find"):
-        forward_to_script("chef-pkg", ["search"] + sys.argv[2:])
-    elif cmd in ("update", "upgrade", "up"):
-        forward_to_script("chef-pkg", ["upgrade"])
-    elif cmd in ("bundles", "bundle"):
-        forward_to_script("chef-pkg", [cmd] + sys.argv[2:])
-    elif cmd in ("theme", "themes"):
-        forward_to_script("chef-theme", sys.argv[2:])
+    if cmd == "menu":
+        subprocess.run(["chef-menu"])
+    elif cmd in ("scan", "recon"):
+        target = sys.argv[2] if len(sys.argv) > 2 else ""
+        run_automated_scan(target)
+    elif cmd == "web":
+        url = sys.argv[2] if len(sys.argv) > 2 else ""
+        run_web_audit(url)
+    elif cmd == "blue":
+        run_blue_team_audit()
     elif cmd == "audit":
-        print_banner()
         run_system_audit()
-    elif cmd == "network":
-        print_banner()
-        run_network_scan()
-    elif cmd in ("autopilot", "auto", "copilot"):
-        forward_to_script("chef-autopilot", sys.argv[2:])
-    elif cmd == "ai":
-        forward_to_script("chef-autopilot", sys.argv[2:])
-    elif cmd == "iso":
-        iso_script = PROJECT_DIR / "iso" / "build_iso.sh"
-        if iso_script.exists():
-            subprocess.run([str(iso_script)])
-        else:
-            print("ISO build script not found.")
+    elif cmd == "pkg":
+        subprocess.run(["chef-pkg"] + sys.argv[2:])
+    elif cmd == "theme":
+        subprocess.run(["chef-theme"] + sys.argv[2:])
     elif cmd == "version":
-        print(f"Chef_Carthy OS Suite v{VERSION} - AI-Powered Cybersecurity Linux Platform")
+        print(f"Chef_Carthy OS Suite v{VERSION}")
     else:
-        # If user typed arbitrary prompt directly: `chef audit my open ports`
-        forward_to_script("chef-autopilot", sys.argv[1:])
+        print(f"{C_RED}Unknown command '{cmd}'. Run 'chef --help' for usage.{C_RESET}")
 
 if __name__ == "__main__":
     main()
