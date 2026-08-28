@@ -57,9 +57,14 @@ echo -e "  ${GREEN}✓ Deployed Cyber HUD plugin to ~/.config/omarchy/plugins/cu
 # 3. Deploy Desktop Themes & Configurations
 echo -e "\n${CYAN}3. Deploying Hyprland, Waybar & Cyber Desktop Configs...${NC}"
 mkdir -p "$HOME/.config/hypr" "$HOME/.config/waybar" "$HOME/.config/wofi" "$HOME/.config/alacritty" "$HOME/.config/starship" "$HOME/.config/mako" "$HOME/.config/chef_carthy"
-rm -f "$HOME/.config/hypr/hyprland.lua" 2>/dev/null || true
-cp "$INSTALL_DIR/configs/hypr/hyprland.conf" "$HOME/.config/hypr/hyprland.conf" || true
-cp "$INSTALL_DIR/configs/hypr/hyprland.conf" "$HOME/.config/hypr/chef-hyprland.conf" || true
+if command -v omarchy >/dev/null 2>&1 && [ -f /usr/share/omarchy/config/hypr/hyprland.lua ]; then
+    cp -u /usr/share/omarchy/config/hypr/hyprland.lua "$HOME/.config/hypr/hyprland.lua" 2>/dev/null || true
+    cp "$INSTALL_DIR/configs/hypr/hyprland.conf" "$HOME/.config/hypr/chef-hyprland.conf" || true
+else
+    rm -f "$HOME/.config/hypr/hyprland.lua" 2>/dev/null || true
+    cp "$INSTALL_DIR/configs/hypr/hyprland.conf" "$HOME/.config/hypr/hyprland.conf" || true
+    cp "$INSTALL_DIR/configs/hypr/hyprland.conf" "$HOME/.config/hypr/chef-hyprland.conf" || true
+fi
 cp "$INSTALL_DIR/configs/waybar/"* "$HOME/.config/waybar/" 2>/dev/null || true
 cp "$INSTALL_DIR/configs/wofi/"* "$HOME/.config/wofi/" 2>/dev/null || true
 cp "$INSTALL_DIR/configs/alacritty/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml" || true
