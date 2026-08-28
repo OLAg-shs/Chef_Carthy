@@ -78,11 +78,9 @@ hl.config({
 })
 
 -- 5. Window Rules (Omarchy / Hyprland Native Lua API)
-hl.window_rule({ rule = "float", match = { class = "alacritty" } })
-hl.window_rule({ rule = "size 780 500", match = { class = "alacritty" } })
-hl.window_rule({ rule = "center", match = { class = "alacritty" } })
-hl.window_rule({ rule = "float", match = { class = "pavucontrol" } })
-hl.window_rule({ rule = "float", match = { class = "thunar" } })
+hl.window_rule({ match = { class = "^(alacritty)$" }, float = true, size = "780 500", center = true })
+hl.window_rule({ match = { class = "^(pavucontrol)$" }, float = true })
+hl.window_rule({ match = { class = "^(thunar)$" }, float = true })
 
 -- 6. Keybindings
 local mainMod = "SUPER"
