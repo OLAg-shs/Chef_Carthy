@@ -1,11 +1,11 @@
 {
     "layer": "top",
     "position": "top",
-    "height": 34,
+    "height": 36,
     "spacing": 6,
-    "margin-top": 6,
-    "margin-left": 10,
-    "margin-right": 10,
+    "margin-top": 4,
+    "margin-left": 8,
+    "margin-right": 8,
     "modules-left": [
         "custom/logo",
         "custom/terminal",
@@ -24,22 +24,22 @@
     ],
     "custom/logo": {
         "format": "🛡️ Chef OS",
-        "tooltip-format": "Chef_Carthy OS Control Center (Click to open)",
+        "tooltip-format": "Chef_Carthy OS Dashboard (Click to open menu)",
         "on-click": "alacritty -t 'Chef Control Center' -e chef menu"
     },
     "custom/terminal": {
-        "format": " Terminal",
-        "tooltip-format": "Launch Terminal (SUPER+Return / SUPER+O / SUPER+T)",
+        "format": " Term",
+        "tooltip-format": "Terminal (SUPER+Return / SUPER+O / SUPER+T)",
         "on-click": "alacritty || kitty || foot"
     },
     "custom/launcher": {
         "format": " Apps",
-        "tooltip-format": "Launch App Menu (SUPER+Space)",
+        "tooltip-format": "App Launcher (SUPER+Space)",
         "on-click": "pkill wofi || wofi --show drun"
     },
     "custom/files": {
         "format": " Files",
-        "tooltip-format": "Open File Manager (SUPER+E)",
+        "tooltip-format": "File Manager (SUPER+E)",
         "on-click": "thunar || alacritty -e yazi"
     },
     "hyprland/workspaces": {
@@ -47,6 +47,10 @@
         "all-outputs": true,
         "format": "{name}",
         "on-click": "activate"
+    },
+    "clock": {
+        "format": "  {:%a, %b %d  •  %H:%M}",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
     },
     "pulseaudio": {
         "format": "{icon} {volume}%",
@@ -64,13 +68,9 @@
         "format": " {percentage}%",
         "interval": 2
     },
-    "clock": {
-        "format": " {:%A, %B %d   %H:%M}",
-        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
-    },
     "custom/power": {
         "format": "⏻",
-        "tooltip": false,
+        "tooltip-format": "Power Menu / Shutdown",
         "on-click": "wlogout || alacritty -e bash -c 'read -p \"Press Enter to shut down...\" && sudo poweroff'"
     }
 }

@@ -2,15 +2,16 @@
 """
 Chef_Carthy OS - Autonomous Agentic AI Terminal Controller (chef-agent)
 Integrates Google Gemini / Antigravity AI directly into the operating system.
-The AI can autonomously:
-- Create, modify, and manage files & project environments
-- Execute shell commands and evaluate outputs
-- Install packages and dependencies (pacman, yay, pip, cargo)
-- Automate cybersecurity tasks, audits, and scripting
+Features:
+- Parameter extraction & input validation (asks for missing targets before running)
+- Tool calling: execute commands, read files, write configs, install packages
+- Automated network recon & web application security auditing
+- Full machine controller with local fallback
 """
 
 import sys
 import os
+import re
 import json
 import time
 import shutil
@@ -39,7 +40,9 @@ You can:
 - Read, write, and create files, scripts, and development environments.
 - Automate cybersecurity workflows, reconnaissance, auditing, and defensive tasks.
 
-Always be concise, precise, and proactive. When asked to perform a task, use tool calling to inspect files, execute necessary commands, create files, and report back clearly."""
+CRITICAL RULES:
+1. Always validate parameters. If the user asks to scan a site or target but does not specify which site/IP/URL, do NOT run local machine diagnostics. Always ask the user for the target.
+2. When a target is provided, use appropriate tools like `chef scan <target>` or `chef web <target>` or `nmap`."""
 
 class ChefAIEngine:
     def __init__(self):
@@ -95,16 +98,47 @@ class ChefAIEngine:
         except Exception as e:
             return {"error": str(e)}
 
-    def call_gemini(self, user_prompt: str, history: list = None):
+    def validate_and_preprocess(self, prompt: str) -> str:
+        """
+        Extracts targets or prompts for missing arguments before running.
+        """
+        p_lower = prompt.lower().strip()
+
+        # Check for scanning requests
+        if any(term in p_lower for term in ["scan site", "scan this site", "scan website", "scan the site", "scan web", "scan url", "scan target"]):
+            # Extract target domain/URL/IP
+            words = prompt.split()
+            potential_targets = []
+            for w in words:
+                cleaned = w.strip("<>'\"(),;")
+                if re.match(r'^(https?://[^\s]+|([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}|(\d{1,3}\.){3}\d{1,3})$', cleaned):
+                    potential_targets.append(cleaned)
+
+            if potential_targets:
+                target = potential_targets[0]
+                print(f"  {C_CYAN}🎯 Target detected:{C_RESET} {C_BOLD}{target}{C_RESET}")
+                return f"scan target {target}"
+            else:
+                print(f"\n{C_YELLOW}{C_BOLD}❓ Parameter Required:{C_RESET}")
+                try:
+                    target = input(f"{C_CYAN}{C_BOLD}Which site, domain, or IP would you like to scan? (e.g. example.com or 192.168.1.1): {C_RESET}").strip()
+                except (KeyboardInterrupt, EOFError):
+                    return ""
+                
+                if not target:
+                    print(f"{C_GRAY}Scan cancelled (no target specified).{C_RESET}")
+                    return ""
+                return f"scan target {target}"
+
+        return prompt
+
+    def call_gemini(self, user_prompt: str):
+        validated_prompt = self.validate_and_preprocess(user_prompt)
+        if not validated_prompt:
+            return
+
         if not self.api_key:
-            print(f"\n{C_YELLOW}{C_BOLD}⚠ No Google AI / Gemini API Key configured.{C_RESET}")
-            print(f"{C_GRAY}To enable full autonomous LLM execution:{C_RESET}")
-            print(f"  1. Run {C_BOLD}chef ai login{C_RESET} and paste your free Google Gemini API key")
-            print(f"  2. Or export {C_BOLD}GEMINI_API_KEY=\"your_key\"{C_RESET}\n")
-            
-            # Fallback to local built-in execution
-            print(f"{C_CYAN}Running with built-in system heuristics...{C_RESET}")
-            return self._local_fallback(user_prompt)
+            return self._local_fallback(validated_prompt)
 
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={self.api_key}"
         
@@ -149,9 +183,8 @@ class ChefAIEngine:
             }
         ]
 
-        contents = [{"role": "user", "parts": [{"text": f"{SYSTEM_PROMPT}\n\nTask: {user_prompt}"}]}]
+        contents = [{"role": "user", "parts": [{"text": f"{SYSTEM_PROMPT}\n\nTask: {validated_prompt}"}]}]
         
-        # Agent execution loop
         for step in range(5):
             payload = {
                 "contents": contents,
@@ -180,7 +213,6 @@ class ChefAIEngine:
                     if not tool_calls:
                         break
 
-                    # Process Tool Calls
                     for tc in tool_calls:
                         fn_name = tc.get("name")
                         fn_args = tc.get("args", {})
@@ -215,13 +247,24 @@ class ChefAIEngine:
                 break
 
     def _local_fallback(self, prompt: str):
-        p_lower = prompt.lower()
-        if "firewall" in p_lower or "ufw" in p_lower:
+        p_lower = prompt.lower().strip()
+        
+        # Scan target
+        if "scan target" in p_lower:
+            parts = prompt.split()
+            target = parts[-1]
+            if target.startswith("http://") or target.startswith("https://"):
+                subprocess.run(["chef", "web", target])
+            else:
+                subprocess.run(["chef", "scan", target])
+        elif "firewall" in p_lower or "ufw" in p_lower:
             self.execute_bash("sudo ufw status verbose")
-        elif "port" in p_lower or "socket" in p_lower:
+        elif "port" in p_lower or "socket" in p_lower or "listeners" in p_lower:
             self.execute_bash("ss -tulpn")
-        elif "audit" in p_lower or "scan" in p_lower:
+        elif "audit" in p_lower or "hardening" in p_lower:
             self.execute_bash("chef audit")
+        elif "blue" in p_lower:
+            self.execute_bash("chef blue")
         else:
             self.execute_bash("uname -a && fastfetch || true")
 
@@ -249,7 +292,7 @@ def main():
         print("  ║         System Controller · Code Generator · Cyber Assistant              ║")
         print("  ╚═══════════════════════════════════════════════════════════════════════════╝")
         print(f"{C_GRAY}  Powered by Google Gemini / Antigravity Engine · Full Machine Access{C_RESET}\n")
-        print(f"  {C_GRAY}• Type any request (e.g. 'build a python port scanner', 'setup nginx web server', 'harden ssh'){C_RESET}")
+        print(f"  {C_GRAY}• Type any request (e.g. 'scan example.com', 'harden firewall', 'create python script'){C_RESET}")
         print(f"  {C_GRAY}• To login with your Google API Key: {C_BOLD}chef ai login{C_RESET}")
         print(f"  {C_GRAY}• Type 'exit' to quit.\n{C_RESET}")
 
