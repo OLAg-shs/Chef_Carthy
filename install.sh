@@ -29,7 +29,23 @@ echo -e "${CYAN}1. Installing Chef_Carthy Command Center (chef, chef-pkg, chef-t
 mkdir -p "$HOME/.local/bin"
 cp "$INSTALL_DIR/bin/"* "$HOME/.local/bin/"
 chmod +x "$HOME/.local/bin/chef"*
-echo -e "  ${GREEN}✓ Installed binaries to ~/.local/bin/${NC}"
+
+# Create/Update chef-session launcher using official start-hyprland wrapper
+cat << 'WRAPPER_EOF' > "$HOME/.local/bin/chef-session"
+#!/bin/bash
+export AQ_NO_MODIFIERS=1
+export WLR_NO_HARDWARE_CURSORS=1
+export LIBGL_ALWAYS_SOFTWARE=1
+export XDG_CURRENT_DESKTOP=Hyprland
+export XDG_SESSION_TYPE=wayland
+export XDG_SESSION_DESKTOP=Hyprland
+exec start-hyprland
+WRAPPER_EOF
+chmod +x "$HOME/.local/bin/chef-session"
+if [ -w /usr/local/bin ]; then
+    cp "$HOME/.local/bin/chef-session" /usr/local/bin/chef-session 2>/dev/null || true
+fi
+echo -e "  ${GREEN}✓ Installed binaries and start-hyprland session wrapper to ~/.local/bin/${NC}"
 
 # 2. Deploy Cyber HUD Bar Widget
 echo -e "\n${CYAN}2. Deploying Cyber HUD Bar Widget to Omarchy Shell...${NC}"
