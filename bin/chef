@@ -247,6 +247,8 @@ def main():
         run_blue_team_audit()
     elif cmd == "audit":
         run_system_audit()
+    elif cmd in ("ai", "agent"):
+        subprocess.run(["chef-agent"] + sys.argv[2:])
     elif cmd == "pkg":
         subprocess.run(["chef-pkg"] + sys.argv[2:])
     elif cmd == "theme":
