@@ -29,7 +29,7 @@ MENU_ITEMS = [
     ("7", "📦 Universal Application Store (VLC, VMware, OBS, Browsers, Dev)", "apps"),
     ("8", "🏴 BlackArch Repository & Pentesting Tool Bundles", "chef pkg bundles"),
     ("9", "🖼️ Dynamic Wallpaper Rotator & Rotation Duration Control", "wallpaper"),
-    ("10", "🎨 Tactical Theme & Glowing Border Selector", "chef theme list"),
+    ("10", "🎨 Tactical Theme & Glowing Border Selector", "chef theme pick"),
     ("11", "🎓 Cybersecurity Study & Exam Academy", "chef tutor"),
     ("12", "⚡ Full System Upgrade & Package Maintenance", "chef update"),
     ("q", "❌ Exit Dashboard", None)

@@ -94,6 +94,7 @@ hl.bind(mainMod, "c", hl.dsp.exec_cmd("alacritty -t 'Chef Control Center' -e che
 hl.bind(mainMod, "g", hl.dsp.exec_cmd("chef-gui"))
 hl.bind(mainMod, "a", hl.dsp.exec_cmd("alacritty -e chef agent"))
 hl.bind(mainMod, "e", hl.dsp.exec_cmd("thunar || alacritty -e yazi"))
+hl.bind(mainMod .. " SHIFT", "t", hl.dsp.exec_cmd("chef-theme pick"))
 
 -- Window Management
 hl.bind(mainMod, "q", hl.dsp.window.close())

@@ -11,6 +11,7 @@
         "custom/terminal",
         "custom/launcher",
         "custom/files",
+        "custom/theme",
         "hyprland/workspaces"
     ],
     "modules-center": [
@@ -41,6 +42,11 @@
         "format": " Files",
         "tooltip-format": "File Manager (SUPER+E)",
         "on-click": "thunar || chef-term -e yazi"
+    },
+    "custom/theme": {
+        "format": "🎨",
+        "tooltip-format": "Switch Theme (SUPER+SHIFT+T)",
+        "on-click": "chef-theme pick"
     },
     "hyprland/workspaces": {
         "disable-scroll": true,

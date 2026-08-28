@@ -198,12 +198,42 @@ general {{
 
     print(f"\n{C_GREEN}{C_BOLD}✓ Theme '{t['name']}' is now ACTIVE!{C_RESET}\n")
 
+def pick_theme():
+    """Show a clickable wofi list of themes and apply whichever one is selected."""
+    entries = [f"{t['name']}  —  {t_id}" for t_id, t in THEMES.items()]
+    try:
+        result = subprocess.run(
+            ["wofi", "--dmenu", "--prompt", "Select Theme"],
+            input="\n".join(entries),
+            capture_output=True, text=True, timeout=60
+        )
+    except FileNotFoundError:
+        print(f"{C_RED}wofi isn't installed, so there's no clickable picker available.{C_RESET}")
+        print(f"{C_GRAY}Falling back to the text list:{C_RESET}")
+        list_themes()
+        return
+    except Exception:
+        return
+
+    choice = result.stdout.strip()
+    if not choice:
+        return  # user hit Escape / closed the menu
+    # Match back to the theme id from "Name  —  id"
+    for t_id in THEMES:
+        if choice.endswith(f"—  {t_id}") or choice.endswith(f"— {t_id}"):
+            apply_theme(t_id)
+            return
+    print(f"{C_RED}Couldn't match selection '{choice}' to a theme.{C_RESET}")
+
 def main():
     if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help", "help", "list"):
         list_themes()
         return
 
     cmd = sys.argv[1]
+    if cmd in ("pick", "menu", "select"):
+        pick_theme()
+        return
     if cmd == "set":
         if len(sys.argv) > 2:
             apply_theme(sys.argv[2])

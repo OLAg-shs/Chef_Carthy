@@ -42,7 +42,8 @@ window#waybar {
 /* Quick Action Launchers */
 #custom-terminal,
 #custom-launcher,
-#custom-files {
+#custom-files,
+#custom-theme {
     padding: 2px 10px;
     margin: 3px 2px;
     background-color: @bg-pill;
@@ -54,7 +55,8 @@ window#waybar {
 
 #custom-terminal:hover,
 #custom-launcher:hover,
-#custom-files:hover {
+#custom-files:hover,
+#custom-theme:hover {
     background-color: alpha(@accent, 0.12);
     color: @fg;
     border: 1px solid @accent;
