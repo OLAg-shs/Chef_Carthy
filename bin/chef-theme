@@ -2,7 +2,7 @@
 """
 Chef_Carthy OS - Tactical Theme & Aesthetics Engine (chef-theme)
 Applies synchronized colors, wallpapers, terminal palettes, and Hyprland glow
-with instant hot-reloading and zero system overhead.
+with instant hot-reloading, custom accent generation, and wallpaper rotator integration.
 """
 
 import sys
@@ -13,7 +13,7 @@ import subprocess
 from pathlib import Path
 
 CONFIG_DIR = Path.home() / ".config" / "chef_carthy"
-THEMES_DIR = Path.home() / ".config" / "chef_carthy" / "themes"
+THEMES_DIR = CONFIG_DIR / "themes"
 
 C_RESET = "\033[0m"
 C_BOLD = "\033[1m"
@@ -21,6 +21,7 @@ C_CYAN = "\033[38;5;51m"
 C_GREEN = "\033[38;5;46m"
 C_PURPLE = "\033[38;5;141m"
 C_YELLOW = "\033[38;5;226m"
+C_RED = "\033[38;5;196m"
 C_GRAY = "\033[38;5;244m"
 
 THEMES = {
@@ -63,6 +64,36 @@ THEMES = {
         "foreground": "#f3e8ff",
         "border_active": "rgb(a855f7) rgb(ec4899) 45deg",
         "border_inactive": "rgb(2d1b4e)"
+    },
+    "tokyo-night": {
+        "name": "Tokyo Night Cyber",
+        "description": "Deep indigo night sky with pastel blue and purple neon",
+        "accent": "#7aa2f7",
+        "accent_secondary": "#bb9af7",
+        "background": "#1a1b26",
+        "foreground": "#c0caf5",
+        "border_active": "rgb(7aa2f7) rgb(bb9af7) 45deg",
+        "border_inactive": "rgb(292e42)"
+    },
+    "blood-red": {
+        "name": "Crimson Tactical",
+        "description": "High-alert tactical red with stealth obsidian casing",
+        "accent": "#ff0055",
+        "accent_secondary": "#8b0000",
+        "background": "#0f0507",
+        "foreground": "#ffe4e6",
+        "border_active": "rgb(ff0055) rgb(8b0000) 45deg",
+        "border_inactive": "rgb(3f1218)"
+    },
+    "rick-and-morty": {
+        "name": "Sci-Fi Portal Green & Purple",
+        "description": "Rick & Morty multidimensional portal green and cosmic purple",
+        "accent": "#00ff9f",
+        "accent_secondary": "#9d4edd",
+        "background": "#0a1118",
+        "foreground": "#e0fbfc",
+        "border_active": "rgb(00ff9f) rgb(9d4edd) 45deg",
+        "border_inactive": "rgb(193549)"
     }
 }
 
@@ -76,14 +107,33 @@ def list_themes():
         print(f"    {t['description']}")
         print(f"    Accent: {t['accent']} | Secondary: {t['accent_secondary']}")
         print()
-    print(f"{C_GRAY}Apply a theme with: {C_BOLD}chef theme set <theme-name>{C_RESET}\n")
+    print(f"{C_GRAY}Apply a theme with: {C_BOLD}chef theme set <theme-name>{C_RESET}")
+    print(f"{C_GRAY}Set custom colors:  {C_BOLD}chef theme custom <accent_hex> [secondary_hex]{C_RESET}")
+    print(f"{C_GRAY}Wallpaper rotator:  {C_BOLD}chef wallpaper next / interval <5m>{C_RESET}\n")
 
-def apply_theme(theme_id):
-    if theme_id not in THEMES:
-        print(f"Error: Unknown theme '{theme_id}'. Run 'chef theme list' to see options.")
+def hex_to_rgb(hex_code):
+    hex_code = hex_code.lstrip("#")
+    if len(hex_code) == 6:
+        return tuple(int(hex_code[i:i+2], 16) for i in (0, 2, 4))
+    return (88, 166, 255)
+
+def apply_theme(theme_id, custom_accent=None, custom_sec=None):
+    if custom_accent:
+        t = {
+            "name": f"Custom ({custom_accent})",
+            "accent": custom_accent,
+            "accent_secondary": custom_sec or custom_accent,
+            "background": "#0b0e14",
+            "foreground": "#f3f4f6",
+            "border_active": f"rgb({hex_to_rgb(custom_accent)[0]},{hex_to_rgb(custom_accent)[1]},{hex_to_rgb(custom_accent)[2]}) 45deg",
+            "border_inactive": "rgb(30,36,50)"
+        }
+    elif theme_id in THEMES:
+        t = THEMES[theme_id]
+    else:
+        print(f"{C_RED}Error: Unknown theme '{theme_id}'. Run 'chef theme list' to see options.{C_RESET}")
         return
 
-    t = THEMES[theme_id]
     print(f"\n{C_CYAN}{C_BOLD}🎨 Applying Theme: {t['name']}...{C_RESET}")
 
     # 1. Update Hyprland border config
@@ -96,7 +146,7 @@ general {{
     col.inactive_border = {t['border_inactive']}
 }}
 """)
-    print(f"  {C_GREEN}✓ Updated Hyprland border colors{C_RESET}")
+    print(f"  {C_GREEN}✓ Updated Hyprland glowing borders{C_RESET}")
 
     # 2. Reload Hyprland
     try:
@@ -105,14 +155,19 @@ general {{
     except Exception:
         pass
 
-    # 3. Notify
+    # 3. Synchronize with Omarchy themes if applicable
+    omarchy_themes = Path.home() / ".config" / "omarchy" / "themes"
+    if omarchy_themes.exists() and theme_id in [d.name for d in omarchy_themes.iterdir() if d.is_dir()]:
+        try:
+            subprocess.run(["omarchy", "theme", "set", theme_id], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        except Exception:
+            pass
+
+    # 4. Notify
     try:
         subprocess.run([
-            "omarchy", "notification", "send",
-            "-g", "🎨",
-            "-u", "low",
-            "Theme Applied",
-            f"Chef_Carthy OS Theme set to '{t['name']}'."
+            "notify-send", "-a", "Chef_Carthy OS", "-i", "preferences-desktop-theme",
+            "Theme Applied", f"Active Theme: {t['name']}"
         ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except Exception:
         pass
@@ -130,6 +185,21 @@ def main():
             apply_theme(sys.argv[2])
         else:
             list_themes()
+    elif cmd == "custom":
+        if len(sys.argv) > 2:
+            accent = sys.argv[2]
+            sec = sys.argv[3] if len(sys.argv) > 3 else None
+            apply_theme("custom", custom_accent=accent, custom_sec=sec)
+        else:
+            print(f"{C_YELLOW}Usage: chef theme custom <accent_hex> [secondary_hex]{C_RESET}")
+    elif cmd in ("wallpaper", "wall", "bg", "background"):
+        # Forward directly to chef-wallpaper
+        script_dir = Path(__file__).resolve().parent
+        wall_bin = script_dir / "chef-wallpaper"
+        if wall_bin.exists():
+            subprocess.run([str(wall_bin)] + sys.argv[2:])
+        else:
+            subprocess.run(["chef-wallpaper"] + sys.argv[2:])
     else:
         apply_theme(cmd)
 

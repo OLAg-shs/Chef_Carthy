@@ -1,7 +1,7 @@
 <div align="center">
 
 # 🛡️ Chef_Carthy OS
-### *Next-Generation AI-Powered Cybersecurity & Tactical Linux Platform*
+### *Next-Generation AI-Powered Cybersecurity, Tactical Linux & Universal Application Platform*
 
 [![Arch Linux](https://img.shields.io/badge/Base-Arch_Linux-1793D1?style=for-the-badge&logo=arch-linux&logoColor=white)](https://archlinux.org/)
 [![Hyprland](https://img.shields.io/badge/Desktop-Hyprland_Wayland-00FFFF?style=for-the-badge&logo=wayland&logoColor=white)](https://hyprland.org/)
@@ -9,7 +9,7 @@
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
 <p align="center">
-  A complete, beautiful, low-overhead Linux OS and tactical cybersecurity platform built for Arch Linux. Combines unified package and bundle management, tactical glassmorphic aesthetics, autonomous AI security auditing, live system telemetry HUD, and turnkey ISO builder recipes.
+  A complete, beautiful, high-performance Linux OS and tactical cybersecurity platform built for Arch Linux. Combines unrestricted autonomous AI system control (Google Gemini / Google CLI), universal software management (VLC, VMware, OBS, Dev tools), 2,800+ BlackArch security tools, dynamic wallpaper rotation with custom durations, and live cyber HUD telemetry.
 </p>
 
 </div>
@@ -20,56 +20,65 @@
 
 ```mermaid
 graph TD
-    A["🛡️ Chef_Carthy OS"] --> B["🎮 Interactive TUI Control Center (chef menu)"]
-    A --> C["🤖 AI Security Assistant (chef ai)"]
-    A --> D["📦 Unified Package & Bundle Manager (chef pkg)"]
-    A --> E["🎨 Tactical Theme Engine (chef theme)"]
-    A --> F["📊 Live Cyber HUD Bar Widget"]
-    A --> G["💿 Bootable ISO Builder (archiso)"]
+    A["🛡️ Chef_Carthy OS"] --> B["🎮 Interactive Control Center (chef menu)"]
+    A --> C["🤖 Unrestricted AI OS Controller (chef ai)"]
+    A --> D["📦 Universal Application & Bundle Store (chef pkg)"]
+    A --> E["🖼️ Dynamic Wallpaper Rotator & Duration (chef wallpaper)"]
+    A --> F["🎨 Tactical Themes & Glowing Borders (chef theme)"]
+    A --> G["📊 Live Cyber HUD Bar Widget"]
+    A --> H["💿 Bootable ISO Builder (archiso)"]
 ```
 
 ---
 
 ### 💎 Key Features
 
-#### 1. 🎮 Interactive Control Center (`chef menu`)
-* Effortless keyboard-driven terminal dashboard to launch security audits, install bundles, switch themes, and query the AI assistant in seconds.
+#### 1. 🤖 Unrestricted Autonomous AI Controller (`chef ai` / `chef login`)
+* Direct integration with **Google Gemini & Google CLI** with full system visibility and zero artificial restrictions.
+* Multi-step autonomous tool execution: executes shell commands, inspects logs, manages systemd services, modifies files, and performs end-to-end remediation.
+* Simple authentication: `chef login` or prompt on first launch.
 
-#### 2. 📦 Unified Package & Bundle Manager (`chef pkg`)
-* **Zero-overhead package manager** wrapping `pacman` and `yay` with colored output and dependency cleaning.
+#### 2. 📦 Universal Application & Software Store (`chef pkg` / `chef install`)
+* **Everyday Desktop Applications**: 1-command installation for `vlc`, `vmware`, `obs`, `firefox`, `brave`, `vscode`, `docker`, `gimp`, `discord`, `steam`.
 * **Curated Toolchain Bundles**:
   * `core`: Hyprland, Waybar, Alacritty, Foot, Starship, PipeWire audio.
-  * `cyber-network`: Wireshark, TCPdump, Termshark, Nmap, Net-tools.
-  * `cyber-web`: Mitmproxy, Curlie, HTTPie, Wget, Nikto.
-  * `cyber-forensics`: Sleuthkit, Binwalk, Foremost, TestDisk, Hexedit.
-  * `cyber-reversing`: Radare2, GDB, Strace, Ltrace, Valgrind.
-  * `cyber-hardening`: Lynis, ClamAV, UFW, Fail2ban, Audit.
-  * `dev`: Python, Rust, GCC, Clang, Docker, Git, Neovim.
+  * `apps-media`: VLC, MPV, OBS Studio, GIMP, FFmpeg, yt-dlp.
+  * `virtualization`: Open-VM-Tools, QEMU/KVM, Virt-Manager, Docker.
+  * `cyber-recon`: Nmap, Masscan, Amass, Subfinder, Whois, Traceroute, Arp-scan.
+  * `cyber-web`: Mitmproxy, Curlie, HTTPie, Wget, Nikto, SQLMap, FFUF, Burp Suite.
+  * `cyber-sniffing`: Wireshark, TCPdump, Termshark, Iftop, Ngrep.
+  * `cyber-wireless`: Aircrack-ng, Kismet, Wifite, Reaver.
+  * `cyber-passwords`: John the Ripper, Hashcat, Hydra, Crunch.
+  * `cyber-forensics`: Sleuthkit, Binwalk, Foremost, TestDisk, Hexedit, Exiftool.
+  * `cyber-reversing`: Radare2, Ghidra, Cutter, GDB, Strace, Valgrind.
+  * `cyber-defense`: Lynis, ClamAV, UFW, Fail2ban, Audit.
+* **BlackArch Repository Integration**: 1-click bootstrap granting access to **2,800+ penetration testing tools** (`chef pkg blackarch`).
 
-#### 3. 🎨 Tactical Theme & Aesthetics Engine (`chef theme`)
+#### 3. 🖼️ Dynamic Wallpaper Rotator & Custom Duration (`chef wallpaper`)
+* Real-time wallpaper rotation daemon with configurable durations (e.g. `chef wallpaper interval 5m`, `15m`, `30m`, `1h`).
+* Instant commands: `chef wallpaper next`, `chef wallpaper random`, `chef wallpaper start`, `chef wallpaper list`.
+* Synchronized background updating with Swaybg and Hyprland.
+
+#### 4. 🎨 Tactical Theme & Aesthetics Engine (`chef theme`)
 * Synchronized colors across **Hyprland glowing borders**, wallpapers, and terminal colors.
 * Pre-configured themes:
   * `cyber-cyan`: Neon Cyber Cyan & Deep Obsidian
   * `matrix-green`: Emerald Phosphor Matrix
   * `synth-amber`: Amber HUD & Titanium Dark Gray
   * `violet-night`: Electric Violet & Midnight Velvet
+  * `tokyo-night`: Tokyo Night Indigo & Pastel Blue
+  * `blood-red`: Crimson Tactical Red & Obsidian
+  * `rick-and-morty`: Multidimensional Portal Green & Cosmic Purple
+* Custom theme generator: `chef theme custom <accent_hex> [secondary_hex]`.
 
-#### 4. 🤖 Built-in AI Security Assistant (`chef ai`)
-* Analyzes local network ports, listening sockets, kernel parameters (`sysctl`), and logs to guide system hardening and defense.
+#### 5. 🎮 Interactive Control Center (`chef menu`)
+* Effortless keyboard-driven terminal dashboard to launch AI sessions, install applications, switch themes, rotate wallpapers, and audit system security.
 
-#### 5. 📊 Live Cyber HUD Bar Widget (`[ 🛡️ Cyber | 88% ]`)
+#### 6. 📊 Live Cyber HUD Bar Widget
 * Real-time security posture score, socket telemetry, and 1-click launchers right on your top bar.
 
-#### 6. 🎓 Interactive Cybersecurity Study & Exam Academy (`chef tutor`)
-* Interactive learning academy and cheat sheets covering **Network Packet Analysis**, **OWASP Top 10 Defenses**, **Linux Kernel Hardening**, **Cryptography**, and **PTES Auditing Methodologies** for certification exam preparation.
-
-#### 7. ⚡ Ultra-Low-Resource Performance Engine
-* **< 450 MB Idle RAM** footprint (over **10x lighter** than Windows 11).
-* **ZRAM Memory Compression** with ZSTD for lag-free performance on laptops.
-* Kernel sysctl optimizations prioritizing low disk swap latency.
-
-#### 8. 💿 Bootable Standalone ISO Builder (`iso/`)
-* Standard `archiso` recipes (`mkarchiso`) to compile bootable live `.iso` images for bare-metal or virtual machine installations.
+#### 7. 🎓 Interactive Cybersecurity Study & Exam Academy (`chef tutor`)
+* Interactive learning academy and cheat sheets covering **Network Packet Analysis**, **OWASP Top 10 Defenses**, **Linux Kernel Hardening**, **Cryptography**, **PTES Auditing**, and **Malware Reverse Engineering**.
 
 ---
 
@@ -90,18 +99,22 @@ cd Chef_Carthy
 | Command | Description |
 | :--- | :--- |
 | `chef menu` | Launch interactive TUI control panel |
-| `chef tutor` | Open interactive Cybersecurity Study & Exam Academy |
+| `chef ai <query>` | Ask the unrestricted AI System Controller |
+| `chef login` | Authenticate Google Gemini API Key / Google CLI |
+| `chef scan <target>` | Automated network discovery & port scan |
+| `chef web <url>` | Automated web application security audit |
+| `chef blue` | Inspect active sockets, listening ports & defenses |
 | `chef audit` | Run full cybersecurity posture & hardening audit |
-| `chef ai <query>` | Ask the built-in AI Security Assistant |
-| `chef agent` | Start interactive autonomous agent session |
-| `chef network` | Inspect active interfaces, open sockets & routing |
-| `chef pkg bundles` | List all curated security & developer bundles |
-| `chef pkg bundle <id>` | Install a tool bundle (e.g. `cyber-network`, `cyber-web`) |
-| `chef install <pkg>` | Install packages via pacman & AUR |
-| `chef update` | Upgrade system, toolchains, AUR packages & clean cache |
+| `chef pkg app <vlc\|vmware\|obs>` | Install desktop application presets |
+| `chef pkg bundle <id>` | Install a tool bundle (e.g. `cyber-web`, `apps-media`) |
+| `chef pkg blackarch` | Integrate official BlackArch repo (2,800+ tools) |
+| `chef wallpaper next` | Instantly switch to next wallpaper |
+| `chef wallpaper interval <5m>` | Set wallpaper rotation duration |
+| `chef wallpaper start` | Start automated background rotator daemon |
 | `chef theme list` | List available tactical visual themes |
-| `chef theme set <name>`| Apply a theme with synchronized Hyprland glow |
-| `chef iso` | Compile a bootable standalone `.iso` with `mkarchiso` |
+| `chef theme set <name>` | Apply a theme with synchronized Hyprland glow |
+| `chef tutor` | Open interactive Cybersecurity Study Academy |
+| `chef update` | Upgrade system, toolchains, AUR packages & clean cache |
 
 ---
 

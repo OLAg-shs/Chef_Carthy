@@ -20,14 +20,15 @@ echo "  ██║     ███████║█████╗  ████�
 echo "  ██║     ██╔══██║██╔══╝  ██╔══╝    ██║     ██╔══██║██╔══██╗   ██║   ██╔══██║  ╚██╔╝  "
 echo "  ╚██████╗██║  ██║███████╗██║       ╚██████╗██║  ██║██║  ██║   ██║   ██║  ██║   ██║   "
 echo "   ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝        ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝   ╚═╝   "
-echo -e "${CYAN}  ► Installing Chef_Carthy OS & AI Cybersecurity Suite...${NC}\n"
+echo -e "${CYAN}  ► Installing Chef_Carthy OS Universal Suite & AI Workstation...${NC}\n"
 
 INSTALL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # 1. Install CLI Engines
-echo -e "${CYAN}1. Installing Chef_Carthy Command Center (chef, chef-pkg, chef-theme, chef-menu)...${NC}"
+echo -e "${CYAN}1. Installing Chef_Carthy Universal Engines (chef, chef-agent, chef-pkg, chef-theme, chef-wallpaper, chef-menu)...${NC}"
 mkdir -p "$HOME/.local/bin"
-cp "$INSTALL_DIR/bin/"* "$HOME/.local/bin/"
+rm -f "$HOME/.local/bin/chef"*
+cp -f "$INSTALL_DIR/bin/"* "$HOME/.local/bin/"
 chmod +x "$HOME/.local/bin/chef"*
 
 # Create/Update chef-session launcher using official start-hyprland wrapper
@@ -45,16 +46,17 @@ chmod +x "$HOME/.local/bin/chef-session"
 if [ -w /usr/local/bin ]; then
     cp "$HOME/.local/bin/chef-session" /usr/local/bin/chef-session 2>/dev/null || true
 fi
-echo -e "  ${GREEN}✓ Installed binaries and start-hyprland session wrapper to ~/.local/bin/${NC}"
+echo -e "  ${GREEN}✓ Installed all binaries and session wrapper to ~/.local/bin/${NC}"
 
 # 2. Deploy Cyber HUD Bar Widget
 echo -e "\n${CYAN}2. Deploying Cyber HUD Bar Widget to Omarchy Shell...${NC}"
 mkdir -p "$HOME/.config/omarchy/plugins/custom.chef-hud"
-cp -r "$INSTALL_DIR/plugins/custom.chef-hud/"* "$HOME/.config/omarchy/plugins/custom.chef-hud/"
+cp -r "$INSTALL_DIR/plugins/custom.chef-hud/"* "$HOME/.config/omarchy/plugins/custom.chef-hud/" 2>/dev/null || true
 echo -e "  ${GREEN}✓ Deployed Cyber HUD plugin to ~/.config/omarchy/plugins/custom.chef-hud${NC}"
 
 # 3. Deploy Desktop Themes & Configurations
 echo -e "\n${CYAN}3. Deploying Hyprland, Waybar & Cyber Desktop Configs...${NC}"
+mkdir -p "$HOME/.config/hypr" "$HOME/.config/waybar" "$HOME/.config/wofi" "$HOME/.config/alacritty" "$HOME/.config/starship" "$HOME/.config/mako" "$HOME/.config/chef_carthy"
 rm -f "$HOME/.config/hypr/hyprland.lua" 2>/dev/null || true
 cp "$INSTALL_DIR/configs/hypr/hyprland.conf" "$HOME/.config/hypr/hyprland.conf" || true
 cp "$INSTALL_DIR/configs/hypr/hyprland.conf" "$HOME/.config/hypr/chef-hyprland.conf" || true
@@ -88,16 +90,19 @@ if [ -f "$HOME/.zshrc" ] && ! grep -q "alias chef=" "$HOME/.zshrc"; then
 fi
 echo -e "  ${GREEN}✓ Added 'chef' alias to shell profile${NC}"
 
-# 6. Apply Default Cyber Theme
-echo -e "\n${CYAN}6. Activating Default Tactical Theme (Neon Cyber Cyan)...${NC}"
+# 6. Apply Default Cyber Theme & Wallpaper
+echo -e "\n${CYAN}6. Activating Default Tactical Theme & Dynamic Wallpaper...${NC}"
 "$HOME/.local/bin/chef-theme" set cyber-cyan || true
+"$HOME/.local/bin/chef-wallpaper" next || true
 
 echo -e "\n${PURPLE}═══════════════════════════════════════════════════════════════════════════════${NC}"
 echo -e "${GREEN}${BOLD}✓ Chef_Carthy OS Suite Installation Completed Successfully!${NC}"
 echo -e "${CYAN}Try running:${NC}"
-echo -e "  • ${BOLD}chef menu${NC}          - Launch interactive TUI control center"
-echo -e "  • ${BOLD}chef audit${NC}         - Run full security posture audit"
-echo -e "  • ${BOLD}chef ai <query>${NC}    - Ask the built-in AI Security Assistant"
-echo -e "  • ${BOLD}chef pkg bundles${NC}   - View & install curated tool bundles"
-echo -e "  • ${BOLD}chef theme list${NC}    - Switch tactical visual themes"
+echo -e "  • ${BOLD}chef menu${NC}                   - Launch interactive universal dashboard"
+echo -e "  • ${BOLD}chef ai <query>${NC}             - Ask the unrestricted AI System Controller"
+echo -e "  • ${BOLD}chef login${NC}                  - Authenticate Google Gemini API Key / Google CLI"
+echo -e "  • ${BOLD}chef pkg app <vlc|vmware>${NC}   - Install desktop software & apps"
+echo -e "  • ${BOLD}chef wallpaper <next|start>${NC} - Dynamic wallpaper rotator with custom duration"
+echo -e "  • ${BOLD}chef theme set <name>${NC}       - Switch tactical themes & border glow"
+echo -e "  • ${BOLD}chef audit${NC}                  - Run full security posture audit"
 echo -e "${PURPLE}═══════════════════════════════════════════════════════════════════════════════${NC}\n"

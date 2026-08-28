@@ -1,12 +1,8 @@
 #!/usr/bin/env python3
 """
-Chef_Carthy OS - Autonomous Agentic AI Terminal Controller (chef-agent)
-Integrates Google Gemini / Antigravity AI directly into the operating system.
-Features:
-- Parameter extraction & input validation (asks for missing targets before running)
-- Tool calling: execute commands, read files, write configs, install packages
-- Automated network recon & web application security auditing
-- Full machine controller with local fallback
+Chef_Carthy OS - Unrestricted Autonomous AI Operating System Controller (chef-agent)
+Gives Google Gemini & Antigravity AI full, unrestricted visibility and tool execution
+across the entire Arch Linux / Hyprland OS.
 """
 
 import sys
@@ -15,6 +11,7 @@ import re
 import json
 import time
 import shutil
+import glob
 import subprocess
 import urllib.request
 import urllib.error
@@ -33,16 +30,20 @@ C_GRAY = "\033[38;5;244m"
 CONFIG_DIR = Path.home() / ".config" / "chef_carthy"
 KEY_FILE = CONFIG_DIR / "ai_credentials.json"
 
-SYSTEM_PROMPT = """You are the Chef_Carthy OS Autonomous System AI.
-You have direct tool execution capabilities on the user's Arch Linux / Hyprland machine.
-You can:
-- Run bash commands to inspect the system, manage services, configure firewalls, and install software.
-- Read, write, and create files, scripts, and development environments.
-- Automate cybersecurity workflows, reconnaissance, auditing, and defensive tasks.
+SYSTEM_PROMPT = """You are the Chef_Carthy OS Autonomous AI System Controller.
+You are granted UNRESTRICTED, FULL-SYSTEM ACCESS across the user's Arch Linux operating system.
 
-CRITICAL RULES:
-1. Always validate parameters. If the user asks to scan a site or target but does not specify which site/IP/URL, do NOT run local machine diagnostics. Always ask the user for the target.
-2. When a target is provided, use appropriate tools like `chef scan <target>` or `chef web <target>` or `nmap`."""
+Your Capabilities:
+1. Shell Execution: Run any bash/shell commands, install software, manage systemd services, configure firewalls, and compile binaries.
+2. File Operations: Read, write, modify, and search any file or configuration across the filesystem (/etc, ~/.config, /var/log, /usr, /home).
+3. Cybersecurity & Penetration Testing: Perform live reconnaissance, port scanning, web application audits, vulnerability identification, and host defense.
+4. Desktop & System Customization: Configure Hyprland, Waybar, themes, wallpapers, audio, and performance settings.
+
+Guidelines:
+- Solve the user's problem end-to-end using your available tools.
+- When running multi-step tasks, execute all necessary actions consecutively until the objective is 100% complete.
+- Be precise, fast, and proactive.
+"""
 
 class ChefAIEngine:
     def __init__(self):
@@ -66,14 +67,58 @@ class ChefAIEngine:
         self.api_key = key.strip()
         with open(KEY_FILE, "w") as f:
             json.dump({"api_key": self.api_key}, f, indent=2)
-        print(f"{C_GREEN}{C_BOLD}✓ Google AI / Gemini API Key saved successfully to ~/.config/chef_carthy/ai_credentials.json{C_RESET}")
+        print(f"\n{C_GREEN}{C_BOLD}✓ Google AI / Gemini credentials saved to ~/.config/chef_carthy/ai_credentials.json{C_RESET}")
+
+    def prompt_login_if_needed(self):
+        """Asks user to logon to Google CLI / Gemini if credentials are not configured."""
+        if self.api_key:
+            return True
+
+        print(f"\n{C_PURPLE}{C_BOLD}═══════════════════════════════════════════════════════════════════════════════{C_RESET}")
+        print(f"{C_CYAN}{C_BOLD}🔑 CHEF_CARTHY OS — GOOGLE AI & GEMINI CLI AUTHENTICATION{C_RESET}")
+        print(f"{C_PURPLE}═══════════════════════════════════════════════════════════════════════════════{C_RESET}\n")
+        print(f"  {C_GRAY}To give the AI real-time autonomous control across your OS, please authenticate.{C_RESET}")
+        print(f"  {C_GRAY}You can get a free Google Gemini API key at: {C_BOLD}https://aistudio.google.com/{C_RESET}\n")
+        print(f"  {C_CYAN}[1]{C_RESET} Enter Google Gemini API Key")
+        print(f"  {C_CYAN}[2]{C_RESET} Launch Google Gemini CLI session directly")
+        print(f"  {C_CYAN}[3]{C_RESET} Continue with Built-in Local Autonomous Fallback\n")
+
+        try:
+            choice = input(f"{C_BOLD}Select authentication option (1-3): {C_RESET}").strip()
+            if choice == "1":
+                key = input(f"{C_CYAN}{C_BOLD}Enter your Google Gemini API Key: {C_RESET}").strip()
+                if key:
+                    self.save_api_key(key)
+                    return True
+            elif choice == "2":
+                if shutil.which("gemini"):
+                    print(f"\n{C_GREEN}Launching Google Gemini CLI...{C_RESET}\n")
+                    subprocess.run(["gemini", "-y"])
+                    return True
+                else:
+                    print(f"{C_YELLOW}Gemini CLI binary not found in PATH.{C_RESET}")
+            elif choice == "3":
+                print(f"{C_GRAY}Using local autonomous fallback.{C_RESET}")
+                return False
+        except (KeyboardInterrupt, EOFError):
+            print("\nSkipping authentication.")
+        return False
+
+    # --- Tool Call Definitions ---
 
     def execute_bash(self, command: str) -> dict:
-        print(f"  {C_PURPLE}⚙️ [AI EXEC]{C_RESET} {C_BOLD}{command}{C_RESET}")
+        print(f"  {C_PURPLE}⚡ [AI EXEC]{C_RESET} {C_BOLD}{command}{C_RESET}")
         try:
-            res = subprocess.run(command, shell=True, capture_output=True, text=True, timeout=60)
-            return {"stdout": res.stdout.strip(), "stderr": res.stderr.strip(), "exit_code": res.returncode}
+            res = subprocess.run(command, shell=True, capture_output=True, text=True, timeout=120)
+            stdout = res.stdout.strip()
+            stderr = res.stderr.strip()
+            if stdout:
+                lines = stdout.split("\n")
+                preview = "\n".join(lines[:10]) + (f"\n... ({len(lines)-10} more lines)" if len(lines) > 10 else "")
+                print(f"     {C_GRAY}↳ {preview}{C_RESET}")
+            return {"stdout": stdout, "stderr": stderr, "exit_code": res.returncode}
         except Exception as e:
+            print(f"     {C_RED}↳ Error: {e}{C_RESET}")
             return {"error": str(e)}
 
     def read_file(self, path: str) -> dict:
@@ -83,13 +128,14 @@ class ChefAIEngine:
             return {"error": f"File {p} does not exist"}
         try:
             with open(p, "r", encoding="utf-8", errors="replace") as f:
-                return {"content": f.read()}
+                content = f.read()
+            return {"content": content, "size_bytes": len(content)}
         except Exception as e:
             return {"error": str(e)}
 
     def write_file(self, path: str, content: str) -> dict:
         p = Path(path).expanduser()
-        print(f"  {C_PURPLE}✍️ [AI WRITE]{C_RESET} {C_BOLD}{p}{C_RESET}")
+        print(f"  {C_PURPLE}✍️  [AI WRITE]{C_RESET} {C_BOLD}{p}{C_RESET}")
         try:
             p.parent.mkdir(parents=True, exist_ok=True)
             with open(p, "w", encoding="utf-8") as f:
@@ -98,47 +144,39 @@ class ChefAIEngine:
         except Exception as e:
             return {"error": str(e)}
 
-    def validate_and_preprocess(self, prompt: str) -> str:
-        """
-        Extracts targets or prompts for missing arguments before running.
-        """
-        p_lower = prompt.lower().strip()
+    def search_files(self, path: str, pattern: str) -> dict:
+        p = Path(path).expanduser()
+        print(f"  {C_PURPLE}🔍 [AI SEARCH]{C_RESET} {C_BOLD}{p} matching '{pattern}'{C_RESET}")
+        try:
+            matches = list(p.rglob(pattern))[:50]
+            return {"matches": [str(m) for m in matches], "count": len(matches)}
+        except Exception as e:
+            return {"error": str(e)}
 
-        # Check for scanning requests
-        if any(term in p_lower for term in ["scan site", "scan this site", "scan website", "scan the site", "scan web", "scan url", "scan target"]):
-            # Extract target domain/URL/IP
-            words = prompt.split()
-            potential_targets = []
-            for w in words:
-                cleaned = w.strip("<>'\"(),;")
-                if re.match(r'^(https?://[^\s]+|([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}|(\d{1,3}\.){3}\d{1,3})$', cleaned):
-                    potential_targets.append(cleaned)
+    def install_packages(self, packages: list) -> dict:
+        print(f"  {C_PURPLE}📦 [AI INSTALL]{C_RESET} {C_BOLD}{', '.join(packages)}{C_RESET}")
+        aur = "yay" if shutil.which("yay") else "paru" if shutil.which("paru") else None
+        cmd = [aur, "-S", "--needed", "--noconfirm"] + packages if aur else ["sudo", "pacman", "-S", "--needed", "--noconfirm"] + packages
+        try:
+            res = subprocess.run(cmd, capture_output=True, text=True)
+            return {"exit_code": res.returncode, "stdout": res.stdout, "stderr": res.stderr}
+        except Exception as e:
+            return {"error": str(e)}
 
-            if potential_targets:
-                target = potential_targets[0]
-                print(f"  {C_CYAN}🎯 Target detected:{C_RESET} {C_BOLD}{target}{C_RESET}")
-                return f"scan target {target}"
-            else:
-                print(f"\n{C_YELLOW}{C_BOLD}❓ Parameter Required:{C_RESET}")
-                try:
-                    target = input(f"{C_CYAN}{C_BOLD}Which site, domain, or IP would you like to scan? (e.g. example.com or 192.168.1.1): {C_RESET}").strip()
-                except (KeyboardInterrupt, EOFError):
-                    return ""
-                
-                if not target:
-                    print(f"{C_GRAY}Scan cancelled (no target specified).{C_RESET}")
-                    return ""
-                return f"scan target {target}"
-
-        return prompt
+    def get_system_telemetry(self) -> dict:
+        print(f"  {C_PURPLE}📊 [AI TELEMETRY]{C_RESET} Inspecting OS health & sockets")
+        info = {
+            "kernel": subprocess.check_output(["uname", "-r"], text=True).strip(),
+            "uptime": subprocess.check_output(["uptime", "-p"], text=True).strip() if shutil.which("uptime") else "Active",
+            "memory": subprocess.check_output(["free", "-h"], text=True).strip() if shutil.which("free") else "",
+            "disk": subprocess.check_output(["df", "-h", "/"], text=True).strip() if shutil.which("df") else ""
+        }
+        return info
 
     def call_gemini(self, user_prompt: str):
-        validated_prompt = self.validate_and_preprocess(user_prompt)
-        if not validated_prompt:
-            return
-
         if not self.api_key:
-            return self._local_fallback(validated_prompt)
+            if not self.prompt_login_if_needed():
+                return self._local_fallback(user_prompt)
 
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={self.api_key}"
         
@@ -147,45 +185,73 @@ class ChefAIEngine:
                 "function_declarations": [
                     {
                         "name": "execute_bash",
-                        "description": "Execute a shell or bash command on the host Linux OS.",
+                        "description": "Execute any shell or bash command with root/system access on Arch Linux.",
                         "parameters": {
                             "type": "OBJECT",
                             "properties": {
-                                "command": {"type": "STRING", "description": "The exact shell command to execute."}
+                                "command": {"type": "STRING", "description": "The shell command line to run."}
                             },
                             "required": ["command"]
                         }
                     },
                     {
                         "name": "read_file",
-                        "description": "Read the contents of any file on the local filesystem.",
+                        "description": "Read the contents of any file on the OS filesystem.",
                         "parameters": {
                             "type": "OBJECT",
                             "properties": {
-                                "path": {"type": "STRING", "description": "The absolute or relative file path."}
+                                "path": {"type": "STRING", "description": "Absolute or relative file path."}
                             },
                             "required": ["path"]
                         }
                     },
                     {
                         "name": "write_file",
-                        "description": "Write or create a file on the local filesystem.",
+                        "description": "Write or create any file or configuration anywhere on the system.",
                         "parameters": {
                             "type": "OBJECT",
                             "properties": {
-                                "path": {"type": "STRING", "description": "The target file path."},
-                                "content": {"type": "STRING", "description": "The exact content to write."}
+                                "path": {"type": "STRING", "description": "Target file path."},
+                                "content": {"type": "STRING", "description": "Exact text contents to write."}
                             },
                             "required": ["path", "content"]
                         }
+                    },
+                    {
+                        "name": "search_files",
+                        "description": "Search for files across a directory using glob patterns.",
+                        "parameters": {
+                            "type": "OBJECT",
+                            "properties": {
+                                "path": {"type": "STRING", "description": "Base directory to search in."},
+                                "pattern": {"type": "STRING", "description": "Glob pattern e.g. '*.conf'"}
+                            },
+                            "required": ["path", "pattern"]
+                        }
+                    },
+                    {
+                        "name": "install_packages",
+                        "description": "Install packages via pacman, yay (AUR), or BlackArch.",
+                        "parameters": {
+                            "type": "OBJECT",
+                            "properties": {
+                                "packages": {"type": "ARRAY", "items": {"type": "STRING"}, "description": "List of package names."}
+                            },
+                            "required": ["packages"]
+                        }
+                    },
+                    {
+                        "name": "get_system_telemetry",
+                        "description": "Get current CPU, RAM, disk, kernel, and process status.",
+                        "parameters": {"type": "OBJECT", "properties": {}}
                     }
                 ]
             }
         ]
 
-        contents = [{"role": "user", "parts": [{"text": f"{SYSTEM_PROMPT}\n\nTask: {validated_prompt}"}]}]
+        contents = [{"role": "user", "parts": [{"text": f"{SYSTEM_PROMPT}\n\nTask: {user_prompt}"}]}]
         
-        for step in range(5):
+        for step in range(12):
             payload = {
                 "contents": contents,
                 "tools": tools_def
@@ -198,9 +264,13 @@ class ChefAIEngine:
             )
             
             try:
-                with urllib.request.urlopen(req, timeout=30) as resp:
+                with urllib.request.urlopen(req, timeout=45) as resp:
                     res_data = json.loads(resp.read().decode("utf-8"))
-                    candidate = res_data.get("candidates", [{}])[0]
+                    candidates = res_data.get("candidates", [])
+                    if not candidates:
+                        break
+                    
+                    candidate = candidates[0]
                     parts = candidate.get("content", {}).get("parts", [])
                     
                     tool_calls = [p.get("functionCall") for p in parts if "functionCall" in p]
@@ -224,6 +294,12 @@ class ChefAIEngine:
                             tool_result = self.read_file(fn_args.get("path", ""))
                         elif fn_name == "write_file":
                             tool_result = self.write_file(fn_args.get("path", ""), fn_args.get("content", ""))
+                        elif fn_name == "search_files":
+                            tool_result = self.search_files(fn_args.get("path", "."), fn_args.get("pattern", "*"))
+                        elif fn_name == "install_packages":
+                            tool_result = self.install_packages(fn_args.get("packages", []))
+                        elif fn_name == "get_system_telemetry":
+                            tool_result = self.get_system_telemetry()
 
                         contents.append({
                             "role": "model",
@@ -240,46 +316,43 @@ class ChefAIEngine:
                         })
             except urllib.error.HTTPError as e:
                 err_msg = e.read().decode("utf-8")
-                print(f"{C_RED}API Error ({e.code}): {err_msg}{C_RESET}")
+                print(f"{C_RED}Google API Error ({e.code}): {err_msg}{C_RESET}")
                 break
             except Exception as e:
-                print(f"{C_RED}Error: {e}{C_RESET}")
+                print(f"{C_RED}Execution Error: {e}{C_RESET}")
                 break
 
     def _local_fallback(self, prompt: str):
         p_lower = prompt.lower().strip()
+        print(f"\n{C_PURPLE}⚡ [CHEF AUTONOMOUS LOCAL ENGINE]{C_RESET}")
         
-        # Scan target
-        if "scan target" in p_lower:
-            parts = prompt.split()
-            target = parts[-1]
+        if "scan" in p_lower:
+            words = prompt.split()
+            target = words[-1] if len(words) > 1 else "127.0.0.1"
             if target.startswith("http://") or target.startswith("https://"):
                 subprocess.run(["chef", "web", target])
             else:
                 subprocess.run(["chef", "scan", target])
+        elif "wallpaper" in p_lower or "background" in p_lower:
+            subprocess.run(["chef-wallpaper", "next"])
+        elif "theme" in p_lower:
+            subprocess.run(["chef-theme", "list"])
         elif "firewall" in p_lower or "ufw" in p_lower:
             self.execute_bash("sudo ufw status verbose")
-        elif "port" in p_lower or "socket" in p_lower or "listeners" in p_lower:
+        elif "socket" in p_lower or "port" in p_lower:
             self.execute_bash("ss -tulpn")
-        elif "audit" in p_lower or "hardening" in p_lower:
-            self.execute_bash("chef audit")
+        elif "audit" in p_lower or "harden" in p_lower:
+            subprocess.run(["chef", "audit"])
         elif "blue" in p_lower:
-            self.execute_bash("chef blue")
+            subprocess.run(["chef", "blue"])
         else:
             self.execute_bash("uname -a && fastfetch || true")
 
 def main():
     engine = ChefAIEngine()
     
-    if len(sys.argv) > 1 and sys.argv[1] == "login":
-        print(f"\n{C_PURPLE}{C_BOLD}🔑 CHEF_CARTHY AI - GOOGLE GEMINI AUTHENTICATION{C_RESET}\n")
-        print(f"{C_GRAY}Get a free Gemini API key from: {C_BOLD}https://aistudio.google.com/{C_RESET}\n")
-        try:
-            key = input(f"{C_CYAN}{C_BOLD}Enter Gemini API Key: {C_RESET}").strip()
-            if key:
-                engine.save_api_key(key)
-        except (KeyboardInterrupt, EOFError):
-            print("\nAborted.")
+    if len(sys.argv) > 1 and sys.argv[1] in ("login", "auth", "setup-key"):
+        engine.prompt_login_if_needed()
         return
 
     if len(sys.argv) > 1 and sys.argv[1] not in ("-i", "--interactive"):
@@ -289,12 +362,15 @@ def main():
         print(f"\n{C_CYAN}{C_BOLD}")
         print("  ╔═══════════════════════════════════════════════════════════════════════════╗")
         print("  ║                    🤖  CHEF_CARTHY AUTONOMOUS AI                          ║")
-        print("  ║         System Controller · Code Generator · Cyber Assistant              ║")
+        print("  ║      Unrestricted System Controller · Cyber Suite · Machine Automation    ║")
         print("  ╚═══════════════════════════════════════════════════════════════════════════╝")
-        print(f"{C_GRAY}  Powered by Google Gemini / Antigravity Engine · Full Machine Access{C_RESET}\n")
-        print(f"  {C_GRAY}• Type any request (e.g. 'scan example.com', 'harden firewall', 'create python script'){C_RESET}")
-        print(f"  {C_GRAY}• To login with your Google API Key: {C_BOLD}chef ai login{C_RESET}")
+        print(f"{C_GRAY}  Powered by Google Gemini & Antigravity Engine · Full OS Access{C_RESET}\n")
+        print(f"  {C_GRAY}• Give any command (e.g. 'install vlc', 'rotate wallpaper', 'scan 192.168.1.1'){C_RESET}")
+        print(f"  {C_GRAY}• Google Authentication: {C_BOLD}chef ai login{C_RESET}")
         print(f"  {C_GRAY}• Type 'exit' to quit.\n{C_RESET}")
+
+        if not engine.api_key:
+            engine.prompt_login_if_needed()
 
         while True:
             try:

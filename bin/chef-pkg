@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Chef_Carthy OS - Custom Unified Package Manager & Bundle Installer (chef-pkg)
-Provides a friendly, beautiful, color-coded package manager wrapping pacman & yay
-with category bundles, BlackArch security repository integration, and dependency verification.
+Chef_Carthy OS - Universal Package & Application Manager (chef-pkg)
+Supports installing ANY application (VLC, VMware, OBS, Browsers, Dev tools)
+as well as complete penetration testing suites, AUR packages, and BlackArch Linux tools.
 """
 
 import sys
@@ -21,11 +21,43 @@ C_RED = "\033[38;5;196m"
 C_PURPLE = "\033[38;5;141m"
 C_GRAY = "\033[38;5;244m"
 
+# Quick Application Presets
+APP_PRESETS = {
+    "vlc": ["vlc", "vlc-plugin-fluidsynth"],
+    "vmware": ["open-vm-tools", "open-vm-tools-dkms", "gtkmm3", "mesa"],
+    "virtualization": ["qemu-full", "virt-manager", "dnsmasq", "bridge-utils", "open-vm-tools"],
+    "media": ["vlc", "mpv", "ffmpeg", "yt-dlp", "gimp", "obs-studio"],
+    "obs": ["obs-studio", "ffmpeg", "v4l2loopback-dkms"],
+    "browser": ["firefox"],
+    "chrome": ["chromium"],
+    "brave": ["brave-bin"],
+    "discord": ["discord"],
+    "steam": ["steam", "lib32-mesa", "vulkan-radeon", "vulkan-intel"],
+    "vscode": ["visual-studio-code-bin"],
+    "docker": ["docker", "docker-compose"],
+    "gimp": ["gimp"],
+    "burp": ["burpsuite"],
+    "ghidra": ["ghidra", "jdk-openjdk"],
+    "metasploit": ["metasploit", "postgresql"],
+    "wireshark": ["wireshark-qt", "tcpdump"]
+}
+
+# Curated Cybersecurity & Desktop Bundles
 BUNDLES = {
     "core": {
         "name": "Core Desktop & Wayland Suite",
         "description": "Hyprland, Waybar, Alacritty, Foot, Starship, PipeWire audio & terminal utilities",
         "packages": ["hyprland", "xdg-desktop-portal-hyprland", "alacritty", "foot", "starship", "btop", "eza", "bat", "fd", "ripgrep", "wl-clipboard", "wtype", "grim", "slurp", "swaybg", "mako"]
+    },
+    "apps-media": {
+        "name": "Everyday Desktop & Multimedia Suite",
+        "description": "VLC Media Player, MPV, OBS Studio, GIMP, FFmpeg, and yt-dlp",
+        "packages": ["vlc", "mpv", "obs-studio", "gimp", "ffmpeg", "yt-dlp"]
+    },
+    "virtualization": {
+        "name": "VMware & Virtual Machine Suite",
+        "description": "Open-VM-Tools, QEMU/KVM, Virt-Manager, and Docker engine",
+        "packages": ["open-vm-tools", "qemu-full", "virt-manager", "docker", "docker-compose"]
     },
     "cyber-recon": {
         "name": "Automated Reconnaissance & Network Discovery",
@@ -90,13 +122,23 @@ def run_install(packages):
     
     print(f"\n{C_CYAN}{C_BOLD}📦 [CHEF-PKG] INSTALLING PACKAGES...{C_RESET}")
     print(f"  {C_GRAY}Packages:{C_RESET} {C_BOLD}{', '.join(packages)}{C_RESET}")
-    print(f"  {C_GRAY}Engine:{C_RESET} {C_PURPLE}{' '.join(cmd)}{C_RESET}\n")
+    print(f"  {C_GRAY}Engine:{C_RESET}   {C_PURPLE}{' '.join(cmd)}{C_RESET}\n")
 
     try:
         subprocess.run(cmd + packages, check=True)
         print(f"\n{C_GREEN}{C_BOLD}✓ Installation finished successfully!{C_RESET}\n")
     except subprocess.CalledProcessError as e:
         print(f"\n{C_RED}{C_BOLD}✗ Installation failed (Exit code {e.returncode}).{C_RESET}\n")
+
+def run_app_install(app_name):
+    app_key = app_name.lower().strip()
+    if app_key in APP_PRESETS:
+        pkgs = APP_PRESETS[app_key]
+        print(f"\n{C_CYAN}{C_BOLD}🚀 [CHEF-PKG] Installing Application Preset: '{app_name}'...{C_RESET}")
+        run_install(pkgs)
+    else:
+        # Direct package install
+        run_install([app_name])
 
 def run_remove(packages):
     if not packages:
@@ -106,7 +148,7 @@ def run_remove(packages):
     aur = get_aur_helper()
     cmd = [aur, "-Rns", "--noconfirm"] if aur else ["sudo", "pacman", "-Rns", "--noconfirm"]
     
-    print(f"\n{C_RED}{C_BOLD}🗑️ [CHEF-PKG] REMOVING PACKAGES...{C_RESET}")
+    print(f"\n{C_RED}{C_BOLD}🗑️  [CHEF-PKG] REMOVING PACKAGES...{C_RESET}")
     print(f"  {C_GRAY}Packages:{C_RESET} {C_BOLD}{', '.join(packages)}{C_RESET}\n")
 
     try:
@@ -133,10 +175,9 @@ def run_system_upgrade():
     aur = get_aur_helper()
     cmd = [aur, "-Syu", "--noconfirm"] if aur else ["sudo", "pacman", "-Syu", "--noconfirm"]
     
-    print(f"\n{C_CYAN}{C_BOLD}⚡ [CHEF-PKG] FULL SYSTEM UPGRADE...{C_RESET}\n")
+    print(f"\n{C_CYAN}{C_BOLD}⚡ [CHEF-PKG] FULL SYSTEM UPGRADE & MAINTENANCE...{C_RESET}\n")
     try:
         subprocess.run(cmd, check=True)
-        # Vacuum old cache
         if shutil.which("paccache"):
             print(f"\n{C_PURPLE}🧹 Vacuuming package cache...{C_RESET}")
             subprocess.run(["sudo", "paccache", "-rk1"], stderr=subprocess.DEVNULL)
@@ -146,7 +187,7 @@ def run_system_upgrade():
 
 def bootstrap_blackarch():
     print(f"\n{C_PURPLE}{C_BOLD}═══════════════════════════════════════════════════════════════════════════════{C_RESET}")
-    print(f"{C_CYAN}{C_BOLD}🛡️ BLACKARCH LINUX SECURITY REPOSITORY INTEGRATION{C_RESET}")
+    print(f"{C_CYAN}{C_BOLD}🛡️  BLACKARCH LINUX SECURITY REPOSITORY INTEGRATION{C_RESET}")
     print(f"{C_PURPLE}═══════════════════════════════════════════════════════════════════════════════{C_RESET}\n")
     print(f"  {C_GRAY}This will add the official BlackArch repository keyring and mirrors to /etc/pacman.conf{C_RESET}")
     print(f"  {C_GRAY}granting instant access to 2,800+ penetration testing & defensive security tools.{C_RESET}\n")
@@ -173,7 +214,7 @@ def bootstrap_blackarch():
 
 def list_bundles():
     print(f"\n{C_PURPLE}{C_BOLD}═══════════════════════════════════════════════════════════════════════════════{C_RESET}")
-    print(f"{C_CYAN}{C_BOLD}📦 CHEF_CARTHY OS - CURATED CYBERSECURITY & DEV BUNDLES{C_RESET}")
+    print(f"{C_CYAN}{C_BOLD}📦 CHEF_CARTHY OS - CURATED APPLICATION & TOOL BUNDLES{C_RESET}")
     print(f"{C_PURPLE}═══════════════════════════════════════════════════════════════════════════════{C_RESET}\n")
     
     for b_id, b in BUNDLES.items():
@@ -186,8 +227,9 @@ def list_bundles():
         print(f"    {C_GRAY}Packages:{C_RESET} {', '.join(b['packages'])}")
         print()
 
-    print(f"{C_GRAY}To install a bundle: {C_BOLD}chef pkg bundle <bundle-id>{C_RESET}")
-    print(f"{C_GRAY}To add 2,800+ BlackArch tools: {C_BOLD}chef pkg blackarch{C_RESET}\n")
+    print(f"{C_GRAY}To install a bundle:       {C_BOLD}chef pkg bundle <bundle-id>{C_RESET}")
+    print(f"{C_GRAY}To install an application: {C_BOLD}chef pkg app <vlc|vmware|obs|browser|vscode>{C_RESET}")
+    print(f"{C_GRAY}To add 2,800+ BlackArch:   {C_BOLD}chef pkg blackarch{C_RESET}\n")
 
 def install_bundle(bundle_id):
     if bundle_id not in BUNDLES:
@@ -199,13 +241,14 @@ def install_bundle(bundle_id):
 
 def main():
     if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help", "help"):
-        print(f"\n{C_BOLD}Chef_Carthy OS Package Manager (chef-pkg){C_RESET}")
+        print(f"\n{C_BOLD}Chef_Carthy OS Universal Package Manager (chef-pkg){C_RESET}")
         print(f"\n{C_BOLD}USAGE:{C_RESET} chef pkg <command> [args...]\n")
-        print(f"  {C_CYAN}install <pkg...>{C_RESET}       Install packages via pacman/AUR")
+        print(f"  {C_CYAN}install <pkg...>{C_RESET}       Install any package via pacman/AUR/BlackArch")
+        print(f"  {C_CYAN}app <app_name>{C_RESET}         Install an app preset (vlc, vmware, obs, browser, vscode, docker)")
         print(f"  {C_CYAN}remove <pkg...>{C_RESET}        Remove packages and unused dependencies")
         print(f"  {C_CYAN}search <query>{C_RESET}         Search for packages in official repos & AUR")
         print(f"  {C_CYAN}update / upgrade{C_RESET}       Full system and AUR upgrade + cache clean")
-        print(f"  {C_CYAN}bundles{C_RESET}                List all curated cybersecurity & dev bundles")
+        print(f"  {C_CYAN}bundles{C_RESET}                List all curated cybersecurity, desktop & dev bundles")
         print(f"  {C_CYAN}bundle <id>{C_RESET}            Install a full curated bundle")
         print(f"  {C_CYAN}blackarch{C_RESET}              Bootstrap official BlackArch repository (2,800+ tools)\n")
         return
@@ -214,6 +257,11 @@ def main():
 
     if cmd in ("install", "i", "add"):
         run_install(sys.argv[2:])
+    elif cmd in ("app", "software"):
+        if len(sys.argv) > 2:
+            run_app_install(sys.argv[2])
+        else:
+            print(f"{C_YELLOW}Available app presets: {', '.join(APP_PRESETS.keys())}{C_RESET}")
     elif cmd in ("remove", "rm", "uninstall"):
         run_remove(sys.argv[2:])
     elif cmd in ("search", "s", "find"):
@@ -230,7 +278,6 @@ def main():
     elif cmd in ("blackarch", "bootstrap-blackarch"):
         bootstrap_blackarch()
     else:
-        # Default fallback to install
         run_install(sys.argv[1:])
 
 if __name__ == "__main__":

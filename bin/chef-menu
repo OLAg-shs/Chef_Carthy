@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Chef_Carthy OS - Interactive Cybersecurity Dashboard & TUI Control Center (chef-menu)
-Omarchy-inspired clean terminal dashboard for automated pentesting, web audits,
-blue team defense, and BlackArch toolchains.
+Chef_Carthy OS - Universal Interactive Dashboard & Control Center (chef-menu)
+Omarchy-inspired clean terminal dashboard for autonomous AI control, software installs,
+automated pentesting, BlackArch toolchains, and dynamic wallpaper rotation.
 """
 
 import sys
@@ -16,36 +16,116 @@ C_CYAN = "\033[38;5;51m"
 C_GREEN = "\033[38;5;46m"
 C_PURPLE = "\033[38;5;141m"
 C_YELLOW = "\033[38;5;226m"
+C_RED = "\033[38;5;196m"
 C_GRAY = "\033[38;5;244m"
 
 MENU_ITEMS = [
-    ("1", "🔍 Automated Network Recon & Discovery", "scan"),
-    ("2", "🌐 Automated Web Application & API Security Audit", "web"),
-    ("3", "🛡️ Blue Team Host Defense & Listening Sockets", "chef blue"),
-    ("4", "🔒 Local Host Hardening & Kernel Security Posture", "chef audit"),
-    ("5", "📦 Install Cyber Toolchains (Recon, Web, Sniffing, Forensics)", "chef pkg bundles"),
-    ("6", "🏴 Integrate BlackArch Repository (2,800+ Security Tools)", "chef pkg blackarch"),
-    ("7", "🎨 Switch Tactical Desktop Theme", "chef theme list"),
-    ("8", "⚡ Full System Upgrade & Package Maintenance", "chef pkg upgrade"),
+    ("1", "🤖 Launch Unrestricted AI OS Controller (Google Gemini / Antigravity)", "ai"),
+    ("2", "🔑 Authenticate Google AI / Gemini CLI Login", "chef login"),
+    ("3", "🔍 Automated Network Recon & Port Discovery", "scan"),
+    ("4", "🌐 Automated Web Application & API Security Audit", "web"),
+    ("5", "🛡️ Blue Team Host Defense & Listening Socket Telemetry", "chef blue"),
+    ("6", "🔒 Local Host Hardening & Kernel Security Posture", "chef audit"),
+    ("7", "📦 Universal Application Store (VLC, VMware, OBS, Browsers, Dev)", "apps"),
+    ("8", "🏴 BlackArch Repository & Pentesting Tool Bundles", "chef pkg bundles"),
+    ("9", "🖼️ Dynamic Wallpaper Rotator & Rotation Duration Control", "wallpaper"),
+    ("10", "🎨 Tactical Theme & Glowing Border Selector", "chef theme list"),
+    ("11", "🎓 Cybersecurity Study & Exam Academy", "chef tutor"),
+    ("12", "⚡ Full System Upgrade & Package Maintenance", "chef update"),
     ("q", "❌ Exit Dashboard", None)
 ]
+
+def run_apps_submenu():
+    while True:
+        os.system("clear")
+        print(f"\n{C_PURPLE}{C_BOLD}═══════════════════════════════════════════════════════════════════════════════{C_RESET}")
+        print(f"{C_CYAN}{C_BOLD}📦 CHEF_CARTHY OS — APPLICATION & SOFTWARE STORE{C_RESET}")
+        print(f"{C_PURPLE}═══════════════════════════════════════════════════════════════════════════════{C_RESET}\n")
+        print(f"  {C_BOLD}{C_CYAN}[1]{C_RESET} 🎬 VLC Media Player & Video Codecs")
+        print(f"  {C_BOLD}{C_CYAN}[2]{C_RESET} 🖥️ VMware & Virtual Machine Suite (open-vm-tools, QEMU, Virt-Manager)")
+        print(f"  {C_BOLD}{C_CYAN}[3]{C_RESET} 🎥 OBS Studio (Screen Recording & Streaming)")
+        print(f"  {C_BOLD}{C_CYAN}[4]{C_RESET} 🌐 Firefox Web Browser")
+        print(f"  {C_BOLD}{C_CYAN}[5]{C_RESET} 🌐 Google Chromium / Brave Browser")
+        print(f"  {C_BOLD}{C_CYAN}[6]{C_RESET} 💻 Visual Studio Code & Development Suite")
+        print(f"  {C_BOLD}{C_CYAN}[7]{C_RESET} 🐳 Docker & Docker-Compose")
+        print(f"  {C_BOLD}{C_CYAN}[8]{C_RESET} 🎯 Custom Package (Type any package name)")
+        print(f"  {C_BOLD}{C_CYAN}[b]{C_RESET} ⬅️ Return to Main Menu\n")
+
+        choice = input(f"{C_BOLD}Select software to install (1-8, b): {C_RESET}").strip().lower()
+        if choice in ("b", "back", "q"):
+            break
+        elif choice == "1":
+            subprocess.run(["chef", "pkg", "app", "vlc"])
+        elif choice == "2":
+            subprocess.run(["chef", "pkg", "app", "vmware"])
+        elif choice == "3":
+            subprocess.run(["chef", "pkg", "app", "obs"])
+        elif choice == "4":
+            subprocess.run(["chef", "pkg", "app", "browser"])
+        elif choice == "5":
+            subprocess.run(["chef", "pkg", "app", "brave"])
+        elif choice == "6":
+            subprocess.run(["chef", "pkg", "app", "vscode"])
+        elif choice == "7":
+            subprocess.run(["chef", "pkg", "app", "docker"])
+        elif choice == "8":
+            pkg = input(f"{C_CYAN}Enter package name(s) to install: {C_RESET}").strip()
+            if pkg:
+                subprocess.run(["chef", "install"] + pkg.split())
+        input(f"\n{C_GRAY}Press Enter to continue...{C_RESET}")
+
+def run_wallpaper_submenu():
+    while True:
+        os.system("clear")
+        print(f"\n{C_PURPLE}{C_BOLD}═══════════════════════════════════════════════════════════════════════════════{C_RESET}")
+        print(f"{C_CYAN}{C_BOLD}🖼️  CHEF_CARTHY OS — DYNAMIC WALLPAPER & ROTATION MANAGER{C_RESET}")
+        print(f"{C_PURPLE}═══════════════════════════════════════════════════════════════════════════════{C_RESET}\n")
+        print(f"  {C_BOLD}{C_CYAN}[1]{C_RESET} ⏭️  Switch to Next Wallpaper Immediately")
+        print(f"  {C_BOLD}{C_CYAN}[2]{C_RESET} 🎲 Pick Random Wallpaper")
+        print(f"  {C_BOLD}{C_CYAN}[3]{C_RESET} ⏱️  Set Rotation Interval / Duration (e.g. 5m, 10m, 30m, 1h)")
+        print(f"  {C_BOLD}{C_CYAN}[4]{C_RESET} 📋 List All Discovered Wallpapers & Active Status")
+        print(f"  {C_BOLD}{C_CYAN}[5]{C_RESET} ▶️  Start Automatic Background Rotator Daemon")
+        print(f"  {C_BOLD}{C_CYAN}[6]{C_RESET} ⏹️  Stop Automatic Rotator Daemon")
+        print(f"  {C_BOLD}{C_CYAN}[7]{C_RESET} 📊 Check Rotator Daemon Status")
+        print(f"  {C_BOLD}{C_CYAN}[b]{C_RESET} ⬅️ Return to Main Menu\n")
+
+        choice = input(f"{C_BOLD}Select wallpaper option (1-7, b): {C_RESET}").strip().lower()
+        if choice in ("b", "back", "q"):
+            break
+        elif choice == "1":
+            subprocess.run(["chef", "wallpaper", "next"])
+        elif choice == "2":
+            subprocess.run(["chef", "wallpaper", "random"])
+        elif choice == "3":
+            dur = input(f"{C_CYAN}Enter duration (e.g. 5m, 15m, 30m, 1h, 300s): {C_RESET}").strip()
+            if dur:
+                subprocess.run(["chef", "wallpaper", "interval", dur])
+        elif choice == "4":
+            subprocess.run(["chef", "wallpaper", "list"])
+        elif choice == "5":
+            subprocess.run(["chef", "wallpaper", "start"])
+        elif choice == "6":
+            subprocess.run(["chef", "wallpaper", "stop"])
+        elif choice == "7":
+            subprocess.run(["chef", "wallpaper", "status"])
+        input(f"\n{C_GRAY}Press Enter to continue...{C_RESET}")
 
 def run_tui_menu():
     while True:
         os.system("clear")
         print(f"{C_CYAN}{C_BOLD}")
         print("  ╔═══════════════════════════════════════════════════════════════════════════╗")
-        print("  ║                   🛡️  CHEF_CARTHY CYBERSECURITY OS                        ║")
-        print("  ║            Advanced Automated Pentesting & Blue Team Workstation          ║")
+        print("  ║                   🛡️  CHEF_CARTHY UNIVERSAL OS WORKSTATION                 ║")
+        print("  ║      Unrestricted AI · Automated Pentesting · Applications · Themes       ║")
         print("  ╚═══════════════════════════════════════════════════════════════════════════╝")
-        print(f"{C_GRAY}  Omarchy Engine · Arch Linux Wayland · High-Speed Cyber Suite{C_RESET}\n")
+        print(f"{C_GRAY}  Arch Linux Wayland Engine · Real-Time Multi-Tool Workstation{C_RESET}\n")
 
         for key, label, _ in MENU_ITEMS:
-            print(f"  {C_BOLD}{C_CYAN}[{key}]{C_RESET} {label}")
+            print(f"  {C_BOLD}{C_CYAN}[{key:>2}]{C_RESET} {label}")
         print()
 
         try:
-            choice = input(f"{C_BOLD}Select an option (1-8, q): {C_RESET}").strip().lower()
+            choice = input(f"{C_BOLD}Select an option (1-12, q): {C_RESET}").strip().lower()
         except (KeyboardInterrupt, EOFError):
             print("\nExiting.")
             break
@@ -56,7 +136,15 @@ def run_tui_menu():
         matched = next((item for item in MENU_ITEMS if item[0] == choice), None)
         if matched:
             action = matched[2]
-            if action == "scan":
+            if action == "ai":
+                os.system("clear")
+                subprocess.run(["chef", "ai"])
+                input(f"\n{C_GRAY}Press Enter to return to menu...{C_RESET}")
+            elif action == "apps":
+                run_apps_submenu()
+            elif action == "wallpaper":
+                run_wallpaper_submenu()
+            elif action == "scan":
                 os.system("clear")
                 target = input(f"{C_BOLD}{C_CYAN}Enter Target IP / Subnet (e.g. 127.0.0.1): {C_RESET}").strip()
                 if target:
@@ -73,7 +161,7 @@ def run_tui_menu():
                 subprocess.run(["bash", "-c", action])
                 input(f"\n{C_GRAY}Press Enter to return to menu...{C_RESET}")
         else:
-            print(f"{C_YELLOW}Invalid selection. Please choose 1-8 or q.{C_RESET}")
+            print(f"{C_YELLOW}Invalid selection. Please choose 1-12 or q.{C_RESET}")
 
 def main():
     run_tui_menu()
