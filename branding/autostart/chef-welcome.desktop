@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Chef OS Welcome
+Comment=Shows the Chef OS banner and status on first login of a session
+Exec=kitty --hold -e /usr/local/bin/chef-welcome
+X-GNOME-Autostart-enabled=true

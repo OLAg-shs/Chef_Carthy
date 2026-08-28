@@ -1,0 +1,5 @@
+
+  Chef OS — Omarchy desktop · full BlackArch toolkit · Chef AI
+
+  Run 'chef-welcome --force' for status, 'chef-ai status' for the agent.
+

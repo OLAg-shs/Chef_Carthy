@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Prints the Chef OS boot/welcome logo in terminal color.
+LOGO="/usr/local/share/chef-os/chef-logo.txt"
+COLOR='\033[38;5;208m'   # orange
+RESET='\033[0m'
+echo -e "${COLOR}"
+cat "$LOGO" 2>/dev/null
+echo -e "${RESET}"

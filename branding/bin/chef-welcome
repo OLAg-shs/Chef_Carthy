@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Runs once per fresh login (guarded by a marker file) to show the Chef OS
+# banner and a quick status line. Safe to run manually any time too.
+set -euo pipefail
+MARKER="$HOME/.local/state/chef-os/welcomed"
+
+show() {
+  chef-ascii
+  echo "Chef OS — Omarchy desktop + full BlackArch toolkit + Chef AI"
+  echo
+  pkg_count="$(pacman -Q 2>/dev/null | wc -l)"
+  blackarch_count="$(pacman -Qg 2>/dev/null | grep -c '^blackarch-' || true)"
+  echo "  Packages installed : ${pkg_count}"
+  echo "  BlackArch groups    : ${blackarch_count} / 48"
+  if command -v gemini >/dev/null 2>&1; then
+    echo "  Chef AI (gemini)   : ready — try 'chef-ai status'"
+  else
+    echo "  Chef AI (gemini)   : gemini CLI not found — install it, then chef-ai works"
+  fi
+  echo
+}
+
+if [[ "${1:-}" == "--force" ]]; then
+  show
+  exit 0
+fi
+
+if [[ ! -f "$MARKER" ]]; then
+  mkdir -p "$(dirname "$MARKER")"
+  show
+  touch "$MARKER"
+fi
