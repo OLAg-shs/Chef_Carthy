@@ -1,21 +1,24 @@
 /* ==============================================================================
    Chef_Carthy OS - Waybar Top Navigation Bar Theme (Omarchy-Inspired)
    Pixel-perfect alignment, unified padding, clean slate glass, and crisp badges.
+   Colors come from colors.css, which chef-theme regenerates on every theme switch.
    ============================================================================== */
+
+@import url("colors.css");
 
 * {
     border: none;
     border-radius: 0;
-    font-family: "JetBrainsMono Nerd Font", "JetBrains Mono", "Noto Sans", monospace;
+    font-family: "JetBrainsMono Nerd Font", "JetBrains Mono", "Font Awesome 6 Free", "Noto Sans", monospace;
     font-size: 12px;
     font-weight: 600;
 }
 
 window#waybar {
-    background-color: rgba(13, 17, 24, 0.92);
-    border: 1px solid rgba(88, 166, 255, 0.25);
+    background-color: @bg-base;
+    border: 1px solid alpha(@accent, 0.25);
     border-radius: 8px;
-    color: #e6edf3;
+    color: @fg;
     padding: 0 4px;
 }
 
@@ -23,7 +26,7 @@ window#waybar {
 
 /* Chef Logo Accent Pill */
 #custom-logo {
-    background: linear-gradient(135deg, #1f6feb, #58a6ff);
+    background: linear-gradient(135deg, @accent-secondary, @accent);
     color: #0b0e14;
     padding: 2px 12px;
     margin: 3px 4px 3px 2px;
@@ -33,7 +36,7 @@ window#waybar {
 }
 
 #custom-logo:hover {
-    background: linear-gradient(135deg, #388bfd, #79c0ff);
+    background: linear-gradient(135deg, @accent, @accent-secondary);
 }
 
 /* Quick Action Launchers */
@@ -42,9 +45,9 @@ window#waybar {
 #custom-files {
     padding: 2px 10px;
     margin: 3px 2px;
-    background-color: #161b22;
-    color: #58a6ff;
-    border: 1px solid #30363d;
+    background-color: @bg-pill;
+    color: @accent;
+    border: 1px solid @border-subtle;
     border-radius: 6px;
     transition: all 0.15s ease;
 }
@@ -52,16 +55,16 @@ window#waybar {
 #custom-terminal:hover,
 #custom-launcher:hover,
 #custom-files:hover {
-    background-color: #21262d;
-    color: #79c0ff;
-    border: 1px solid #58a6ff;
+    background-color: alpha(@accent, 0.12);
+    color: @fg;
+    border: 1px solid @accent;
 }
 
 /* Workspaces Indicator */
 #workspaces {
     margin: 3px 2px 3px 4px;
-    background-color: #161b22;
-    border: 1px solid #30363d;
+    background-color: @bg-pill;
+    border: 1px solid @border-subtle;
     border-radius: 6px;
     padding: 1px 2px;
 }
@@ -77,14 +80,14 @@ window#waybar {
 }
 
 #workspaces button.active {
-    background-color: rgba(88, 166, 255, 0.22);
-    color: #58a6ff;
+    background-color: alpha(@accent, 0.22);
+    color: @accent;
     font-weight: 800;
 }
 
 #workspaces button:hover {
-    background-color: #21262d;
-    color: #f0f6fc;
+    background-color: alpha(@accent, 0.10);
+    color: @fg;
 }
 
 /* --- Center Module --- */
@@ -93,10 +96,10 @@ window#waybar {
 #clock {
     padding: 2px 16px;
     margin: 3px 0;
-    background-color: #161b22;
-    border: 1px solid #30363d;
+    background-color: @bg-pill;
+    border: 1px solid @border-subtle;
     border-radius: 6px;
-    color: #e6edf3;
+    color: @fg;
     font-weight: 700;
     letter-spacing: 0.3px;
 }
@@ -109,14 +112,14 @@ window#waybar {
 #custom-power {
     padding: 2px 10px;
     margin: 3px 2px;
-    background-color: #161b22;
-    border: 1px solid #30363d;
+    background-color: @bg-pill;
+    border: 1px solid @border-subtle;
     border-radius: 6px;
     color: #c9d1d9;
 }
 
 #pulseaudio {
-    color: #a371f7;
+    color: @accent-secondary;
 }
 
 #cpu {
@@ -141,3 +144,4 @@ window#waybar {
     background-color: rgba(248, 81, 73, 0.30);
     border: 1px solid #f85149;
 }
+

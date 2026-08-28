@@ -103,9 +103,10 @@ cp -rn "$INSTALL_DIR/configs/wallpapers/"* "$HOME/Downloads/wallpapers/" 2>/dev/
 
 # Auto-install openssh and terminal if missing
 if command -v pacman >/dev/null 2>&1 && [ "$EUID" -eq 0 -o -w /var/lib/pacman ]; then
-    pacman -S --needed --noconfirm openssh foot 2>/dev/null || true
+    pacman -S --needed --noconfirm openssh foot ttf-jetbrains-mono-nerd 2>/dev/null || true
     systemctl enable --now sshd 2>/dev/null || true
 fi
+fc-cache -f >/dev/null 2>&1 || true
 
 # 7. Apply Default Cyber Theme & Wallpaper
 echo -e "\n${CYAN}7. Activating Default Tactical Theme & Dynamic Wallpaper...${NC}"
