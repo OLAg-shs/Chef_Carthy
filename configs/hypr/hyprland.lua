@@ -4,10 +4,10 @@
 -- ==============================================================================
 
 -- 1. Monitors
-hl.monitor("", "preferred", "auto", 1)
-hl.monitor("Virtual-1", "preferred", "auto", 1)
+hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1 })
+hl.monitor({ output = "Virtual-1", mode = "preferred", position = "auto", scale = 1 })
 for i = 2, 8 do
-    hl.monitor("Virtual-" .. i, "disable")
+    hl.monitor({ output = "Virtual-" .. i, disabled = true })
 end
 
 -- 2. Environment Variables (VMware & Wayland Compatibility)
