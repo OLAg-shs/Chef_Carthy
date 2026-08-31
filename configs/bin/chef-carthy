@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+cd "${HOME:-/home/chef_carthy}"
+export TERM="${TERM:-xterm-256color}"
+
+exec /usr/bin/gemini "$@"

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "custom.chef-overlay",
+  "name": "Chef OS Floating Overlay",
+  "version": "1.0.0",
+  "description": "Floating desktop text overlay",
+  "kinds": [
+    "service"
+  ],
+  "keepLoaded": true,
+  "entryPoints": {
+    "service": "Service.qml"
+  }
+}

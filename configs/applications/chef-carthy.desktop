@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Chef Carthy AI
+GenericName=Google Gemini AI Agent
+Comment=Official Gemini CLI AI Assistant for Chef OS
+Exec=alacritty -t "Chef Carthy AI" -e /usr/local/bin/chef-carthy
+Icon=chef-carthy
+Terminal=false
+Categories=Utility;Development;
