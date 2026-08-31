@@ -35,13 +35,43 @@ if [[ "$reply" =~ ^[Yy]$ ]]; then
   chmod +x /tmp/strap.sh
   sudo /tmp/strap.sh
   sudo pacman -Sy
-  xargs -a "$ROOT_DIR/packages/blackarch-categories.txt" sudo pacman -S --needed --noconfirm \
-    2> >(grep -v '^#')
+
+  # Install one category group at a time so one bad/conflicting package
+  # can't silently abort the whole batch (this is what left a previous
+  # run at only 2/48 groups with no explanation). Logs a clear pass/fail
+  # summary at the end and is safe to re-run — --needed skips what's
+  # already installed.
+  ok=0; failed=()
+  while read -r group; do
+    [[ "$group" =~ ^#.*$ || -z "$group" ]] && continue
+    echo "--- installing $group ---"
+    if sudo pacman -S --needed --noconfirm "$group"; then
+      ok=$((ok+1))
+    else
+      failed+=("$group")
+    fi
+  done < "$ROOT_DIR/packages/blackarch-categories.txt"
+
+  echo "BlackArch groups installed: $ok / 48"
+  if [[ ${#failed[@]} -gt 0 ]]; then
+    echo "Failed (often package conflicts — resolve manually, then re-run this script, --needed makes it safe to repeat):"
+    printf '  %s\n' "${failed[@]}"
+  fi
 fi
 
-echo "=== [3/4] Installing Chef AI ==="
+echo "=== [3/4] Installing Chef AI + Gemini CLI ==="
 sudo install -Dm755 "$ROOT_DIR/ai-agent/chef-ai.sh" /usr/local/bin/chef-ai
-echo "Installed chef-ai. Run 'chef-ai status' to verify it can read the system."
+echo "Installed chef-ai."
+
+if ! command -v gemini >/dev/null 2>&1; then
+  echo "gemini CLI not found — installing it (needs Node.js 20+ and npm)."
+  sudo pacman -S --needed --noconfirm nodejs npm
+  sudo npm install -g @google/gemini-cli
+  echo "Installed. Run 'gemini' once to authenticate with your Google account"
+  echo "or API key before chef-ai's 'ask'/'fix' commands will work."
+else
+  echo "gemini CLI already present."
+fi
 
 echo "=== [4/4] Installing Chef OS branding ==="
 sudo install -Dm644 "$ROOT_DIR/branding/chef-logo.txt" /usr/local/share/chef-os/chef-logo.txt
