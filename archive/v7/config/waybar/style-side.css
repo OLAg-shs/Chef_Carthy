@@ -1,0 +1,161 @@
+* {
+  font-family: "JetBrainsMono Nerd Font", "Noto Sans", "Font Awesome 6 Free", "Inter", sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #6E6A5F;
+  border: none;
+  border-radius: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  transition: all 150ms ease;
+}
+
+window#waybar {
+  background: rgba(248, 244, 234, 0.92);
+  border: 1px solid #DCD3BE;
+  border-radius: 14px;
+}
+
+#waybar {
+  margin: 0;
+}
+
+/* Top Group */
+.modules-left {
+  margin-top: 6px;
+}
+
+#custom-launcher {
+  background: #A6534A;
+  color: #FFFFFF;
+  margin: 2px 6px;
+  padding: 8px 4px;
+  border-radius: 10px;
+  font-size: 17px;
+}
+
+#custom-launcher:hover {
+  background: #C06A5F;
+}
+
+/* Workspaces */
+#workspaces {
+  margin: 2px 6px;
+}
+
+#workspaces button {
+  font-family: "JetBrainsMono Nerd Font", "Noto Sans", "Inter", sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #6E6A5F;
+  background: transparent;
+  padding: 4px 6px;
+  margin: 2px 0;
+  border-radius: 8px;
+  min-height: 26px;
+}
+
+#workspaces button.active {
+  background: #A6534A;
+  color: #FFFFFF;
+}
+
+#workspaces button label {
+  color: inherit;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+#workspaces button:hover {
+  background: #E8E0CE;
+  color: #2B2A28;
+}
+
+#custom-addworkspace {
+  color: #A6534A;
+  background: #E8E0CE;
+  padding: 4px 4px;
+  margin: 2px 8px 4px 8px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+#custom-addworkspace:hover {
+  background: #A6534A;
+  color: #FFFFFF;
+}
+
+#custom-search,
+#custom-files,
+#custom-terminal,
+#custom-spotify {
+  color: #6E6A5F;
+  background: transparent;
+  padding: 6px 4px;
+  margin: 2px 6px;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+#custom-search:hover,
+#custom-files:hover,
+#custom-terminal:hover,
+#custom-spotify:hover {
+  background: #E8E0CE;
+  color: #2B2A28;
+}
+
+/* Middle Spacer */
+#custom-spacer {
+  background: transparent;
+  min-height: 1px;
+}
+
+/* Bottom Group */
+.modules-right {
+  margin-bottom: 6px;
+}
+
+#network,
+#pulseaudio,
+#custom-notifications,
+#custom-settings {
+  color: #6E6A5F;
+  background: transparent;
+  padding: 6px 4px;
+  margin: 2px 6px;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+#network:hover,
+#pulseaudio:hover,
+#custom-notifications:hover,
+#custom-settings:hover {
+  background: #E8E0CE;
+  color: #2B2A28;
+}
+
+#clock {
+  font-family: "Noto Sans", "Inter", sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  color: #2B2A28;
+  padding: 4px 0;
+  margin: 2px 6px;
+}
+
+#custom-power {
+  color: #A6534A;
+  background: transparent;
+  padding: 6px 4px;
+  margin: 2px 6px 4px 6px;
+  border-radius: 8px;
+  font-size: 17px;
+}
+
+#custom-power:hover {
+  background: #A6534A;
+  color: #FFFFFF;
+}

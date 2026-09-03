@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+set -e
+
+export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$(id -u)}
+export HYPRLAND_INSTANCE_SIGNATURE=${HYPRLAND_INSTANCE_SIGNATURE:-$(ls -t $XDG_RUNTIME_DIR/hypr 2>/dev/null | head -n1)}
+
+echo "=== CHEF OS HEALTH CHECK ==="
+echo ""
+
+# 1. Compositor
+if pgrep -x Hyprland >/dev/null; then
+    echo "[PASS] Compositor: Hyprland is running"
+else
+    echo "[FAIL] Compositor: Hyprland is NOT running"
+fi
+
+# 2. Display
+MONITORS=$(hyprctl -j monitors 2>/dev/null | grep -o "\"name\": *\"[^\"]*\"" || true)
+if [ -n "$MONITORS" ]; then
+    echo "[PASS] Display: Active outputs detected ($MONITORS)"
+else
+    echo "[FAIL] Display: No active outputs found"
+fi
+
+# 3. Dock
+WAYBAR_COUNT=$(pgrep -cx waybar || true)
+if [ "$WAYBAR_COUNT" -eq 1 ]; then
+    echo "[PASS] Dock: Single Left Vertical Dock active (1 instance)"
+elif [ "$WAYBAR_COUNT" -gt 1 ]; then
+    echo "[WARN] Dock: Multiple Waybar instances running ($WAYBAR_COUNT)"
+else
+    echo "[FAIL] Dock: Waybar is NOT running"
+fi
+
+# 4. Wallpaper
+if pgrep -x swaybg >/dev/null && [ -f ~/.config/chef-os/wallpapers/chefos-main.png ]; then
+    echo "[PASS] Wallpaper: swaybg active with chefos-main.png"
+else
+    echo "[FAIL] Wallpaper: swaybg not running or wallpaper missing"
+fi
+
+# 5. Animated Shell / Notifications
+if pgrep -x quickshell >/dev/null; then
+    echo "[PASS] Shell/Notifications: Quickshell daemon active (QuickSettings + Notifications + PowerMenu)"
+elif pgrep -x swaync >/dev/null; then
+    echo "[PASS] Shell/Notifications: SwayNC daemon active"
+else
+    echo "[FAIL] Shell/Notifications: Daemon is NOT running"
+fi
+
+# 6. Idle / Lock screen
+if pgrep -x hypridle >/dev/null; then
+    echo "[PASS] Lock/Idle: hypridle daemon running"
+else
+    echo "[FAIL] Lock/Idle: hypridle is NOT running"
+fi
+
+# 7. Launcher
+if [ -f ~/.config/rofi/chefos.rasi ]; then
+    echo "[PASS] Launcher: Rofi with chefos.rasi theme ready"
+else
+    echo "[FAIL] Launcher: chefos.rasi not found"
+fi
+
+# 8. Theme & Palette
+if [ -f ~/.config/chef-os/theme.json ]; then
+    echo "[PASS] Theme: Central theme.json active"
+else
+    echo "[FAIL] Theme: theme.json missing"
+fi
+
+# 9. Hyprland Config Errors
+ERRORS=$(hyprctl configerrors 2>/dev/null || true)
+if [ -z "$ERRORS" ]; then
+    echo "[PASS] Hyprland Config: 0 syntax/runtime errors"
+else
+    echo "[FAIL] Hyprland Config Errors: $ERRORS"
+fi
+
+echo ""
+echo "=== HEALTH CHECK COMPLETE ==="

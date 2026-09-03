@@ -1,0 +1,37 @@
+* {
+  bg: #F8F4EA;
+  bg-alt: #E8E0CE;
+  fg: #2B2A28;
+  fg-muted: #6E6A5F;
+  accent: #A6534A;
+  border-color: #DCD3BE;
+  font: "Noto Sans 11";
+}
+window {
+  background-color: @bg;
+  border: 1px;
+  border-color: @border-color;
+  border-radius: 12px;
+  width: 640px;
+}
+inputbar {
+  background-color: @bg-alt;
+  text-color: @fg;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: 12px;
+}
+listview {
+  background-color: @bg;
+  margin: 0px 12px 12px 12px;
+  spacing: 2px;
+}
+element {
+  padding: 8px;
+  border-radius: 8px;
+  text-color: @fg-muted;
+}
+element selected {
+  background-color: @accent;
+  text-color: #FFFFFF;
+}

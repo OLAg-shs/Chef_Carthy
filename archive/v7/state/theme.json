@@ -1,0 +1,19 @@
+{
+  "name": "Chef Cream",
+  "background": "#F1EBDD",
+  "surface": "#F8F4EA",
+  "surface_alt": "#E8E0CE",
+  "text": "#2B2A28",
+  "text_muted": "#6E6A5F",
+  "accent": "#A6534A",
+  "accent_hover": "#C06A5F",
+  "accent_text": "#FFFFFF",
+  "border": "#DCD3BE",
+  "ink": "#1B1B1B",
+  "olive": "#8A9574",
+  "radius_sm": "6px",
+  "radius_md": "10px",
+  "radius_lg": "14px",
+  "font_ui": "Noto Sans, Inter, sans-serif",
+  "font_mono": "JetBrains Mono, Fira Code, monospace"
+}

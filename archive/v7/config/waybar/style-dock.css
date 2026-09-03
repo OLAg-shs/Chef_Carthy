@@ -1,0 +1,120 @@
+* {
+  font-family: "Noto Sans", "Font Awesome 6 Free", "Font Awesome 7 Free", "Font Awesome 6 Brands", "Inter", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #2B2A28;
+  border: none;
+  border-radius: 0;
+  min-height: 0;
+  transition: all 180ms ease;
+}
+
+window#waybar {
+  background: #F8F4EA;
+  border: 1px solid #DCD3BE;
+  border-radius: 14px;
+}
+
+/* Chef Logo */
+#custom-chef {
+  font-size: 16px;
+  font-weight: 900;
+  color: #FFFFFF;
+  background: #A6534A;
+  padding: 8px 4px;
+  margin: 6px 6px 4px 6px;
+  border-radius: 10px;
+}
+
+#custom-chef:hover {
+  background: #C06A5F;
+}
+
+/* Dynamic Workspaces */
+#workspaces {
+  margin: 4px 6px;
+}
+
+#workspaces button {
+  padding: 4px 0;
+  margin: 2px 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #6E6A5F;
+  font-size: 11px;
+}
+
+#workspaces button:hover {
+  background: #E8E0CE;
+  color: #2B2A28;
+}
+
+#workspaces button.active {
+  background: #A6534A;
+  color: #FFFFFF;
+}
+
+/* Dynamic Running Applications */
+#taskbar {
+  margin: 6px 0;
+}
+
+#taskbar button {
+  padding: 6px;
+  margin: 3px 6px;
+  border-radius: 10px;
+  background: transparent;
+}
+
+#taskbar button:hover {
+  background: #E8E0CE;
+}
+
+#taskbar button.active {
+  background: #E8E0CE;
+  border-left: 3px solid #A6534A;
+}
+
+/* Right / Bottom Controls */
+#pulseaudio,
+#network,
+#battery,
+#custom-notifications,
+#clock,
+#custom-settings,
+#custom-power {
+  padding: 6px 4px;
+  margin: 2px 6px;
+  border-radius: 8px;
+  background: transparent;
+  color: #6E6A5F;
+  font-size: 14px;
+}
+
+#pulseaudio:hover,
+#network:hover,
+#battery:hover,
+#custom-notifications:hover,
+#clock:hover,
+#custom-settings:hover {
+  background: #E8E0CE;
+  color: #2B2A28;
+}
+
+#clock {
+  font-size: 10px;
+  font-weight: 700;
+  color: #2B2A28;
+  line-height: 1.1;
+  padding: 4px 0;
+}
+
+#custom-power {
+  color: #A6534A;
+  margin-bottom: 6px;
+}
+
+#custom-power:hover {
+  background: #A6534A;
+  color: #FFFFFF;
+}

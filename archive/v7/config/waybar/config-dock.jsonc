@@ -1,0 +1,91 @@
+{
+  "layer": "top",
+  "position": "left",
+  "width": 56,
+  "margin-top": 10,
+  "margin-bottom": 10,
+  "margin-left": 10,
+  "modules-left": [
+    "custom/chef",
+    "hyprland/workspaces",
+    "wlr/taskbar"
+  ],
+  "modules-right": [
+    "pulseaudio",
+    "network",
+    "battery",
+    "custom/notifications",
+    "clock",
+    "custom/settings",
+    "custom/power"
+  ],
+
+  "custom/chef": {
+    "format": "◈",
+    "on-click": "rofi -show drun -theme ~/.config/rofi/chefos.rasi",
+    "tooltip": "Chef OS Launcher (Super+Space)"
+  },
+
+  "hyprland/workspaces": {
+    "format": "{id}",
+    "on-click": "activate",
+    "all-outputs": true
+  },
+
+  "wlr/taskbar": {
+    "format": "{icon}",
+    "icon-size": 20,
+    "icon-theme": "Papirus",
+    "tooltip-format": "{name}: {title}",
+    "on-click": "activate",
+    "on-click-middle": "close"
+  },
+
+  "pulseaudio": {
+    "format": "{icon}",
+    "format-muted": "",
+    "format-icons": {
+      "default": ["", "", ""]
+    },
+    "tooltip-format": "Volume: {volume}%",
+    "on-click": "pavucontrol"
+  },
+
+  "network": {
+    "format-wifi": "",
+    "format-ethernet": "󰈀",
+    "format-disconnected": "睊",
+    "tooltip-format": "{ifname}: {ipaddr}",
+    "on-click": "nm-connection-editor"
+  },
+
+  "battery": {
+    "format": "{icon}",
+    "format-charging": "",
+    "format-icons": ["", "", "", "", ""],
+    "tooltip-format": "{capacity}%"
+  },
+
+  "custom/notifications": {
+    "format": "",
+    "on-click": "swaync-client -t",
+    "tooltip": "Notifications"
+  },
+
+  "clock": {
+    "format": "{:%H\n%M}",
+    "tooltip-format": "{:%A, %B %d, %Y}"
+  },
+
+  "custom/settings": {
+    "format": "",
+    "on-click": "nwg-look",
+    "tooltip": "Settings"
+  },
+
+  "custom/power": {
+    "format": "",
+    "on-click": "wlogout",
+    "tooltip": "Power Menu"
+  }
+}

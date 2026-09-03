@@ -1,4 +1,12 @@
-# Chef OS
+# Chef OS (V7 Historical Reference Archive)
+
+> [!NOTE]
+> **ARCHIVAL NOTICE:** This repository is the permanent historical archive and reference implementation for **Chef OS V7** (the Arch Linux / Hyprland / Quickshell based generation).
+> Active development has transitioned to a new, from-scratch operating system project.
+> All complete V7 desktop configurations, Quickshell components (Dynamic Island, Popovers), Waybar styles, scripts, wallpapers, master specifications, and proof artifacts are preserved under [`archive/v7/`](./archive/v7/).
+
+---
+
 
 A security-focused Linux distro: **Omarchy's real desktop** (vendored from
 upstream, unmodified) + **the full BlackArch tool catalog** + **Chef AI**, a

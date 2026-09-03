@@ -1,0 +1,126 @@
+{
+  "layer": "top",
+  "position": "left",
+  "exclusive": true,
+  "width": 56,
+  "margin-top": 12,
+  "margin-bottom": 12,
+  "margin-left": 8,
+  "margin-right": 0,
+  "spacing": 4,
+  "modules-left": [
+    "custom/launcher",
+    "hyprland/workspaces",
+    "custom/addworkspace",
+    "custom/search",
+    "custom/files",
+    "custom/terminal",
+    "custom/spotify"
+  ],
+  "modules-center": [
+    "custom/spacer"
+  ],
+  "modules-right": [
+    "network",
+    "pulseaudio",
+    "custom/notifications",
+    "custom/settings",
+    "clock",
+    "custom/power"
+  ],
+
+  "custom/launcher": {
+    "format": "",
+    "on-click": "rofi -show drun -theme ~/.config/rofi/chefos.rasi",
+    "tooltip": "Applications (Super+Space)"
+  },
+
+  "hyprland/workspaces": {
+    "format": "{icon}",
+    "on-click": "activate",
+    "all-outputs": true,
+    "format-icons": {
+      "1": "1",
+      "2": "󰅪",
+      "3": "󰎈",
+      "4": "󰖟",
+      "default": "1"
+    }
+  },
+
+  "custom/addworkspace": {
+    "format": "󰐕",
+    "on-click": "quickshell ipc call chefos toggleDesktopCreator",
+    "tooltip": "New Desktop (Pick Vibe Icon)"
+  },
+
+  "custom/search": {
+    "format": "",
+    "on-click": "rofi -show run -theme ~/.config/rofi/chefos.rasi",
+    "tooltip": "Search"
+  },
+
+  "custom/files": {
+    "format": "",
+    "on-click": "nautilus",
+    "tooltip": "Files (Super+E)"
+  },
+
+  "custom/terminal": {
+    "format": "",
+    "on-click": "alacritty",
+    "tooltip": "Terminal (Super+Enter)"
+  },
+
+  "custom/spotify": {
+    "format": "",
+    "on-click": "spotify",
+    "tooltip": "Spotify"
+  },
+
+  "custom/spacer": {
+    "format": " ",
+    "tooltip": false
+  },
+
+  "network": {
+    "format-wifi": "",
+    "format-ethernet": "󰈀",
+    "format-disconnected": "󰤮",
+    "tooltip-format": "{ifname}: {ipaddr}",
+    "on-click": "quickshell ipc call chefos toggleWifi"
+  },
+
+  "pulseaudio": {
+    "format": "{icon}",
+    "format-muted": "󰖁",
+    "format-icons": {
+      "default": ["󰕿", "󰖀", "󰕾"]
+    },
+    "tooltip-format": "Volume: {volume}%",
+    "on-click": "quickshell ipc call chefos toggleVolume"
+  },
+
+  "custom/notifications": {
+    "format": "󰂚",
+    "on-click": "quickshell ipc call chefos toggleNotifications",
+    "tooltip": "Notifications"
+  },
+
+  "custom/settings": {
+    "format": "󰒓",
+    "on-click": "quickshell ipc call chefos toggleQuickSettings",
+    "tooltip": "Control Center"
+  },
+
+  "clock": {
+    "format": "{:%H\n%M}",
+    "tooltip-format": "{:%A, %B %d, %Y}"
+  },
+
+  "custom/power": {
+    "format": "󰐥",
+    "on-click": "quickshell ipc call chefos togglePowerMenu",
+    "tooltip": "Power Session"
+  }
+}

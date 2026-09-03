@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+OPTIONS="  Lock\n󰍃  Logout\n󰒲  Suspend\n󰜉  Reboot\n⏻  Shutdown"
+
+CHOSEN=$(echo -e "$OPTIONS" | rofi -dmenu -i -p "Power" -theme ~/.config/chef-os/rofi/launcher.rasi)
+
+case "$CHOSEN" in
+    *"Lock"*) ~/.config/chef-os/scripts/chef-lock ;;
+    *"Logout"*) hyprctl dispatch exit ;;
+    *"Suspend"*) systemctl suspend ;;
+    *"Reboot"*) systemctl reboot ;;
+    *"Shutdown"*) systemctl poweroff ;;
+esac

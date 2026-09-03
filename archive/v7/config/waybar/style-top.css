@@ -1,0 +1,48 @@
+* {
+  font-family: "Noto Sans", "Font Awesome 6 Free", "Font Awesome 7 Free", "Inter", sans-serif;
+  font-size: 11px;
+  color: #2B2A28;
+}
+
+window#waybar {
+  background: #F8F4EA;
+  border: 1px solid #DCD3BE;
+  border-radius: 10px;
+}
+
+#workspaces {
+  margin-left: 4px;
+}
+
+#workspaces button {
+  padding: 2px 8px;
+  margin: 0 2px;
+  border-radius: 6px;
+  background: transparent;
+  color: #6E6A5F;
+  border: none;
+}
+
+#workspaces button.active {
+  background: #A6534A;
+  color: #FFFFFF;
+}
+
+#clock,
+#network,
+#pulseaudio,
+#battery,
+#custom-notification,
+#custom-power {
+  padding: 0 8px;
+}
+
+#custom-notification {
+  font-family: "Font Awesome 6 Free", "Font Awesome 7 Free";
+}
+
+#custom-power {
+  font-family: "Font Awesome 6 Free", "Font Awesome 7 Free";
+  color: #A6534A;
+  margin-right: 6px;
+}

@@ -1,0 +1,126 @@
+* {
+  font-family: "Noto Sans", "JetBrainsMono Nerd Font", "Inter", sans-serif;
+  color: #2B2A28;
+}
+
+.control-center {
+  background: #F1EBDD;
+  border: 1px solid #DCD3BE;
+  border-radius: 12px;
+  color: #2B2A28;
+  padding: 12px;
+}
+
+.control-center * {
+  color: #2B2A28;
+}
+
+.control-center .widget-title {
+  color: #2B2A28;
+  font-size: 16px;
+  font-weight: 700;
+  margin: 6px;
+}
+
+.control-center .widget-title > button {
+  background: #E8E0CE;
+  color: #2B2A28;
+  border: 1px solid #DCD3BE;
+  border-radius: 8px;
+  padding: 4px 8px;
+}
+
+.control-center .widget-title > button:hover {
+  background: #A6534A;
+  color: #FFFFFF;
+}
+
+.control-center .widget-dnd {
+  background: #F8F4EA;
+  border: 1px solid #DCD3BE;
+  border-radius: 8px;
+  margin: 6px;
+  padding: 8px 12px;
+}
+
+.control-center .widget-dnd > label {
+  color: #2B2A28;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.control-center .widget-dnd > switch {
+  background: #E8E0CE;
+  border-radius: 12px;
+  border: 1px solid #DCD3BE;
+}
+
+.control-center .widget-dnd > switch:checked {
+  background: #A6534A;
+}
+
+.control-center .widget-dnd > switch slider {
+  background: #FFFFFF;
+  border-radius: 50%;
+}
+
+.control-center .blank-window,
+.control-center .widget-label,
+.control-center .placeholder {
+  color: #6E6A5F;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 24px;
+}
+
+.notification-row {
+  outline: none;
+  margin: 6px;
+}
+
+.notification {
+  background: #F8F4EA;
+  border: 1px solid #DCD3BE;
+  border-radius: 10px;
+  color: #2B2A28;
+  padding: 10px;
+}
+
+.notification-content {
+  color: #2B2A28;
+}
+
+.notification-content .summary {
+  color: #2B2A28;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.notification-content .body {
+  color: #6E6A5F;
+  font-size: 12px;
+}
+
+.notification-content .time {
+  color: #6E6A5F;
+  font-size: 11px;
+}
+
+.notification-action {
+  background: #E8E0CE;
+  color: #2B2A28;
+  border: 1px solid #DCD3BE;
+  border-radius: 6px;
+  margin: 4px;
+  padding: 4px 8px;
+}
+
+.notification-action:hover {
+  background: #A6534A;
+  color: #FFFFFF;
+}
+
+.notification-default-action {
+  background: transparent;
+  color: #2B2A28;
+}

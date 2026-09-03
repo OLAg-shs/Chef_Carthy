@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+clear
+echo -e "\033[38;2;181;83;77m"
+echo "        ▲       "
+echo "      ▲ ▲ ▲     "
+echo "    ▲ ▲ 👨‍🍳 ▲ ▲   "
+echo "      ▲ ▲ ▲     "
+echo "        ▲       "
+echo -e "\033[0m"
+echo -e "\033[1;38;2;43;43;43m  CHEF OS 1.0 (Arch Linux)\033[0m"
+echo -e "\033[38;2;118;112;101m  ────────────────────────\033[0m"
+echo -e "\033[1;38;2;181;83;77m  OS:\033[0m         Chef OS (Arch Linux x86_64)"
+echo -e "\033[1;38;2;181;83;77m  Host:\033[0m       $(cat /sys/devices/virtual/dmi/id/product_name 2>/dev/null || echo "VMware Virtual Machine")"
+echo -e "\033[1;38;2;181;83;77m  Kernel:\033[0m     $(uname -r)"
+echo -e "\033[1;38;2;181;83;77m  Uptime:\033[0m     $(uptime -p | sed "s/up //")"
+echo -e "\033[1;38;2;181;83;77m  Packages:\033[0m   $(pacman -Q | wc -l) (pacman)"
+echo -e "\033[1;38;2;181;83;77m  Shell:\033[0m      $SHELL"
+echo -e "\033[1;38;2;181;83;77m  WM:\033[0m         Hyprland (Wayland)"
+echo -e "\033[1;38;2;181;83;77m  Theme:\033[0m      Sumi-e Ink & Warm Paper"
+echo -e "\033[1;38;2;181;83;77m  Icons:\033[0m      Papirus"
+echo -e "\033[1;38;2;181;83;77m  Terminal:\033[0m   Alacritty"
+echo -e "\033[1;38;2;181;83;77m  Memory:\033[0m     $(free -h | awk "/^Mem:/ {print \$3 \" / \" \$2}")"
+echo
+echo -e "  \033[48;2;31;30;29m   \033[48;2;181;83;77m   \033[48;2;125;140;113m   \033[48;2;217;156;99m   \033[48;2;108;125;138m   \033[48;2;156;123;142m   \033[48;2;116;141;139m   \033[48;2;213;206;197m   \033[0m"
+echo

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+VOL=$(pamixer --get-volume)
+MUTED=$(pamixer --get-mute)
+
+if [ "$MUTED" == "true" ]; then
+    notify-send -h string:x-canonical-private-synchronous:volume -t 1500 -a "Chef OS" "Volume: Muted" -i audio-volume-muted
+else
+    notify-send -h string:x-canonical-private-synchronous:volume -h int:value:"$VOL" -t 1500 -a "Chef OS" "Volume: ${VOL}%" -i audio-volume-high
+fi

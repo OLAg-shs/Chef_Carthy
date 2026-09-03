@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+export LIBGL_ALWAYS_SOFTWARE=1
+export WLR_NO_HARDWARE_CURSORS=1
+export WLR_RENDERER_ALLOW_SOFTWARE=1
+export AQ_NO_MODIFIERS=1
+export XDG_CURRENT_DESKTOP=Hyprland
+export XDG_SESSION_TYPE=wayland
+export XDG_SESSION_DESKTOP=Hyprland
+exec /usr/bin/start-hyprland "$@"

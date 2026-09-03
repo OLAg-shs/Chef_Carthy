@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+set -e
+
+ACTION=\"\$1\"
+ICON=\"\$2\"
+LABEL=\"\$3\"
+CONFIG_FILE=\"\$HOME/.config/chef-os/workspaces.json\"
+WAYBAR_CONFIG=\"\$HOME/.config/waybar/config-side.jsonc\"
+
+mkdir -p \"\$HOME/.config/chef-os\"
+
+if [ ! -f \"\$CONFIG_FILE\" ]; then
+    echo '{\"1\": {\"icon\": \"1\", \"label\": \"Main\"}}' > \"\$CONFIG_FILE\"
+fi
+
+if [ \"\$ACTION\" = \"create\" ]; then
+    if [ -z \"\$ICON\" ]; then
+        echo \"Error: Icon is mandatory\" >&2
+        exit 1
+    fi
+    
+    # Determine next workspace ID
+    EXISTING_IDS=\$(hyprctl -j workspaces 2>/dev/null | grep -o '\"id\": *[0-9]*' | grep -o '[0-9]*' || echo \"1\")
+    MAX_ID=1
+    for id in \$EXISTING_IDS; do
+        if [ \"\$id\" -gt \"\$MAX_ID\" ]; then
+            MAX_ID=\$id
+        fi
+    done
+    NEXT_ID=\$((MAX_ID + 1))
+    
+    # Save into workspaces.json and waybar config
+    python3 -c \"
+import json, sys, os
+cf = os.path.expanduser('~/.config/chef-os/workspaces.json')
+wb = os.path.expanduser('~/.config/waybar/config-side.jsonc')
+data = {}
+try:
+    with open(cf, 'r') as f:
+        data = json.load(f)
+except Exception:
+    pass
+data[str(\$NEXT_ID)] = {'icon': sys.argv[1], 'label': sys.argv[2]}
+with open(cf, 'w') as f:
+    json.dump(data, f, indent=2)
+
+try:
+    with open(wb, 'r') as f:
+        cfg = json.load(f)
+    if 'hyprland/workspaces' in cfg:
+        icons = cfg['hyprland/workspaces'].get('format-icons', {})
+        icons[str(\$NEXT_ID)] = sys.argv[1]
+        cfg['hyprland/workspaces']['format-icons'] = icons
+        with open(wb, 'w') as f:
+            json.dump(cfg, f, indent=2)
+except Exception as e:
+    print('Waybar update error:', e)
+\" \"\$ICON\" \"\$LABEL\"
+
+    # Switch workspace in Hyprland
+    export XDG_RUNTIME_DIR=\${XDG_RUNTIME_DIR:-/run/user/\$(id -u)}
+    export HYPRLAND_INSTANCE_SIGNATURE=\${HYPRLAND_INSTANCE_SIGNATURE:-\$(ls -t \$XDG_RUNTIME_DIR/hypr 2>/dev/null | head -n1)}
+    
+    hyprctl dispatch \"hl.dsp.focus({ workspace = \$NEXT_ID })\" 2>/dev/null || hyprctl dispatch workspace \"\$NEXT_ID\" 2>/dev/null || true
+    
+    # Signal waybar reload
+    pkill -SIGUSR2 waybar 2>/dev/null || true
+    echo \"Created workspace \$NEXT_ID with icon \$ICON\"
+fi

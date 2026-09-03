@@ -1,0 +1,6 @@
+configuration {
+  modi: "drun,run,filebrowser";
+  show-icons: true;
+  icon-theme: "Papirus";
+  font: "Noto Sans 11";
+}

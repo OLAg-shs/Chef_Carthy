@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+mkdir -p ~/Pictures/Screenshots
+TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
+TARGET="$HOME/Pictures/Screenshots/Screenshot_${TIMESTAMP}.png"
+
+if [ "$1" == "full" ]; then
+    grim "$TARGET"
+else
+    GEOM=$(slurp -b "#FAF7F266" -c "#B5534D" -w 2 2>/dev/null)
+    if [ -n "$GEOM" ]; then
+        grim -g "$GEOM" "$TARGET"
+    else
+        exit 0
+    fi
+fi
+
+if [ -f "$TARGET" ]; then
+    notify-send "Screenshot Captured" "Saved to $(basename "$TARGET")" -i "$TARGET" -a "Chef OS"
+fi

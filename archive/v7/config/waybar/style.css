@@ -1,0 +1,123 @@
+* {
+  font-family: "Noto Sans", "Font Awesome 6 Free", "Font Awesome 7 Free", "Font Awesome 6 Brands", "Inter", sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: #2B2A28;
+  border: none;
+  border-radius: 0;
+  min-height: 0;
+  transition: all 180ms ease;
+}
+
+window#waybar {
+  background: #F8F4EA;
+  border: 1px solid #DCD3BE;
+  border-radius: 10px;
+}
+
+/* Left Group */
+#custom-chef {
+  font-size: 14px;
+  font-weight: 900;
+  color: #FFFFFF;
+  background: #A6534A;
+  padding: 2px 10px;
+  margin: 4px 4px 4px 6px;
+  border-radius: 6px;
+}
+
+#custom-chef:hover {
+  background: #C06A5F;
+}
+
+#workspaces {
+  margin: 4px 2px;
+}
+
+#workspaces button {
+  padding: 2px 8px;
+  margin: 0 2px;
+  border-radius: 6px;
+  background: transparent;
+  color: #6E6A5F;
+}
+
+#workspaces button:hover {
+  background: #E8E0CE;
+  color: #2B2A28;
+}
+
+#workspaces button.active {
+  background: #A6534A;
+  color: #FFFFFF;
+}
+
+/* Center Live Application Tabs & MPRIS */
+#taskbar {
+  margin: 4px 0;
+}
+
+#taskbar button {
+  padding: 2px 10px;
+  margin: 0 3px;
+  border-radius: 6px;
+  background: #E8E0CE;
+  color: #2B2A28;
+}
+
+#taskbar button:hover {
+  background: #DCD3BE;
+}
+
+#taskbar button.active {
+  background: #A6534A;
+  color: #FFFFFF;
+}
+
+#taskbar button.active * {
+  color: #FFFFFF;
+}
+
+#mpris {
+  padding: 2px 10px;
+  margin: 4px 4px;
+  border-radius: 6px;
+  background: #E8E0CE;
+  color: #2B2A28;
+}
+
+#mpris:hover {
+  background: #DCD3BE;
+}
+
+/* Right System Group */
+#clock,
+#network,
+#pulseaudio,
+#battery,
+#custom-notification,
+#custom-power {
+  padding: 2px 8px;
+  margin: 4px 1px;
+  border-radius: 6px;
+  background: transparent;
+  color: #2B2A28;
+}
+
+#clock:hover,
+#network:hover,
+#pulseaudio:hover,
+#battery:hover,
+#custom-notification:hover {
+  background: #E8E0CE;
+}
+
+#custom-power {
+  color: #A6534A;
+  margin-right: 6px;
+}
+
+#custom-power:hover {
+  background: #A6534A;
+  color: #FFFFFF;
+}
